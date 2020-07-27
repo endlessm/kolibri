@@ -80,7 +80,7 @@
         const iOS = iOSTest.test(navigator.userAgent);
         const iOSorIE11 = iOS || IE11Test.test(navigator.userAgent);
         // Skip hashi on requests for these browsers
-        return this.defaultFile.storage_url + (iOSorIE11 ? '?SKIP_HASHI=true' : '');
+        return this.defaultFile.storage_url + (iOSorIE11 ? '?SKIP_HASHI=true' : '') + '?date=' + (+ new Date());
       },
       iframeHeight() {
         return (this.options && this.options.height) || defaultContentHeight;
