@@ -52,7 +52,7 @@ class DefaultThemeHook(theme_hook.ThemeHook):
             theme_hook.SIGN_IN: {
                 theme_hook.BACKGROUND: static("background.jpg"),
                 theme_hook.SCRIM_OPACITY: 0.7,
-                theme_hook.TITLE: None,  # use default: "Kolibri"
+                theme_hook.TITLE: "Kolibri - Custom Channel Presentation",
                 theme_hook.TOP_LOGO: {
                     theme_hook.IMG_SRC: None,  # use default Kolibri bird
                     theme_hook.IMG_STYLE: "padding-left: 64px; padding-right: 64px; margin-bottom: 8px; margin-top: 8px",
