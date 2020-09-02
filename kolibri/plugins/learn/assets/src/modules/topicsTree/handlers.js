@@ -1,4 +1,4 @@
-import { ContentNodeResource, ContentNodeProgressResource } from 'kolibri.resources';
+import { ContentNodeResource, ContentNodeSearchResource, ContentNodeProgressResource } from 'kolibri.resources';
 import samePageCheckGenerator from 'kolibri.utils.samePageCheckGenerator';
 import ConditionalPromise from 'kolibri.lib.conditionalPromise';
 import router from 'kolibri.coreVue.router';
@@ -13,15 +13,16 @@ export function showTopicsChannel(store, id) {
     store.commit('SET_PAGE_NAME', PageNames.TOPICS_CHANNEL);
     // Check if the channel has a node with a custom presentation. If
     // so, go to it directly.
-    ContentNodeResource.fetchCollection({
-      getParams: {
-        channel_id: id,
-        kind: ContentNodeKinds.HTML5,
-        title: CUSTOM_PRESENTATION_TITLE,
-      },
-    }).then((nodes) => {
-      if (nodes.length) {
-        return showTopicsContent(store, nodes[0].id);
+    const getParams = {
+      search: CUSTOM_PRESENTATION_TITLE,
+      kind: ContentNodeKinds.HTML5,
+      channel_id: id,
+    };
+    ContentNodeSearchResource.getCollection(getParams)
+    .fetch()
+      .then(({ results }) => {
+      if (results.length) {
+        return showTopicsContent(store, results[0].id);
       } else {
         return showTopicsTopic(store, { id, isRoot: true });
       }
