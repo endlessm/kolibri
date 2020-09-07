@@ -145,6 +145,9 @@
           }
           this.goToContent(event.data.data);
         }
+        if (event.data.event === 'getThumbnail') {
+          this.sendThumbnail(event.data.data);
+        }
       });
 
       this.hashi = new Hashi({ iframe: this.$refs.iframe, now });
@@ -182,17 +185,6 @@
         }).then((nodes) => {
           const promises = nodes.filter((node) => {
             return node.id !== currentNodeId;
-          }).map((node) => {
-            const thumbnailUrl = getContentNodeThumbnail(node);
-            if (!thumbnailUrl) {
-              return node;
-            }
-            const promise = axios.get(thumbnailUrl, {responseType: 'arraybuffer'}).then((response) => {
-              const returnedB64 = Buffer.from(response.data).toString('base64');
-              node.thumbnail = "data:" + response.headers["content-type"] + ";base64," + returnedB64;
-              return node;
-            });
-            return promise;
           });
 
           Promise.all(promises).then((nodes) => {
@@ -201,6 +193,36 @@
               event,
               nameSpace,
               data: {channel, nodes},
+            };
+            iframeWindow.postMessage(message, '*');
+          });
+        });
+      },
+
+      sendThumbnail(id) {
+        const iframeWindow = this.$refs.iframe.contentWindow;
+        const event = 'sendThumbnail';
+        ContentNodeResource.fetchModel({ id }).then((node) => {
+          const thumbnailUrl = getContentNodeThumbnail(node);
+          if (!thumbnailUrl) {
+            const message = {
+              event,
+              nameSpace,
+              data: {id, thumbnail: null},
+            };
+            iframeWindow.postMessage(message, '*');
+            return;
+          }
+          const promise = axios.get(thumbnailUrl, {responseType: 'arraybuffer'}).then((response) => {
+              const returnedB64 = Buffer.from(response.data).toString('base64');
+              const thumbnail = "data:" + response.headers["content-type"] + ";base64," + returnedB64;
+              return thumbnail;
+          });
+          promise.then((thumbnail) => {
+            const message = {
+              event,
+              nameSpace,
+              data: {id, thumbnail},
             };
             iframeWindow.postMessage(message, '*');
           });
