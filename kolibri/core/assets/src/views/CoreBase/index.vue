@@ -142,6 +142,62 @@
   import LanguageSwitcherModal from '../language-switcher/LanguageSwitcherModal';
   import CoreBanner from '../CoreBanner';
   import ScrollingHeader from './ScrollingHeader';
+  import store from 'kolibri.coreVue.vuex.store';
+  import * as theme from 'kolibri-design-system/lib/styles/theme';
+  import isEqual from 'lodash/isEqual';
+
+  const sikanaTheme = {
+    primary: {
+      v_50: "#e2f6e9",
+      v_100: "#b8e7ca",
+      v_200: "#88d7a8",
+      v_300: "#4dc884",
+      v_400: "#00bc6a",
+      v_500: "#00af51",
+      v_600: "#00a048",
+      v_700: "#008e3c",
+      v_800: "#007c30",
+      v_900: "#005d1c",
+    },
+    secondary: {
+      v_50: "#fdfdea",
+      v_100: "#fbf9ca",
+      v_200: "#f8f5a8",
+      v_300: "#f6f188",
+      v_400: "#f3ed6f",
+      v_500: "#f0e859",
+      v_600: "#f2da56",
+      v_700: "#eec34c",
+      v_800: "#eaac43",
+      v_900: "#e38833",
+    },
+  };
+  const phetTheme = {
+    primary: {
+      v_50: "#fbe3eb",
+      v_100: "#f6bacd",
+      v_200: "#f08dac",
+      v_300: "#ea608b",
+      v_400: "#e53e73",
+      v_500: "#e01e5b",
+      v_600: "#cf1b59",
+      v_700: "#ba1854",
+      v_800: "#a51450",
+      v_900: "#800e48",
+    },
+    secondary: {
+      v_50: "#f4e4f3",
+      v_100: "#e5bce2",
+      v_200: "#d490d0",
+      v_300: "#c163bc",
+      v_400: "#b43fae",
+      v_500: "#a516a1",
+      v_600: "#98139c",
+      v_700: "#860c94",
+      v_800: "#76078d",
+      v_900: "#580080",
+    },
+  };
 
   const scrollPositions = {
     _scrollPositions: {},
@@ -300,6 +356,7 @@
     computed: {
       ...mapGetters(['isAdmin', 'isSuperuser']),
       ...mapState({
+        currentChannelId: state => state.topicsTree.channel.id,
         error: state => state.core.error,
         loading: state => state.core.loading,
         blockDoubleClicks: state => state.core.blockDoubleClicks,
@@ -413,6 +470,29 @@
       },
     },
     watch: {
+      currentChannelId(newValue) {
+        if (newValue === '8b51ac7fc47344a699eaf57c4fd31c70') {
+          // sikana channel
+          if (!isEqual(Lockr.get('customTheme'), sikanaTheme)) {
+            theme.setBrandColors(sikanaTheme);
+            Lockr.set('customTheme', sikanaTheme);
+            global.location.reload();
+          }
+        } else if (newValue === '197934f144305350b5820c7c4dd8e194') {
+          // peth channel
+          if (!isEqual(Lockr.get('customTheme'), phetTheme)) {
+            theme.setBrandColors(phetTheme);
+            Lockr.set('customTheme', phetTheme);
+            global.location.reload();
+          }
+        } else {
+          // other channel
+          if (Lockr.get('customTheme') !== undefined) {
+            Lockr.rm('customTheme');
+            global.location.reload();
+          }
+        }
+      },
       $route() {
         // If there's a scrollTo parameter, it will be handled by
         // the vue-router via `scrollBehavior`.

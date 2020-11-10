@@ -26,6 +26,7 @@ import { i18nSetup, languageDirection } from '../utils/i18n';
 import ContentRendererErrorComponent from '../views/ContentRenderer/ContentRendererError';
 import apiSpec from './apiSpec';
 import plugin_data from 'plugin_data';
+import Lockr from 'lockr';
 // Do this before any async imports to ensure that public paths
 // are set correctly
 urls.setUp();
@@ -53,7 +54,8 @@ const coreApp = {
 // set up theme
 const kolibriTheme = plugin_data.kolibriTheme;
 
-theme.setBrandColors(kolibriTheme.brandColors);
+const colors = Lockr.get('customTheme') || kolibriTheme.brandColors;
+theme.setBrandColors(colors);
 theme.setTokenMapping(kolibriTheme.tokenMapping);
 // set up branding
 branding.setBranding(kolibriTheme);
