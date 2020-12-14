@@ -1,32 +1,14 @@
-import { ContentNodeResource, ContentNodeSearchResource, ContentNodeProgressResource } from 'kolibri.resources';
+import { ContentNodeResource, ContentNodeProgressResource } from 'kolibri.resources';
 import samePageCheckGenerator from 'kolibri.utils.samePageCheckGenerator';
 import ConditionalPromise from 'kolibri.lib.conditionalPromise';
 import router from 'kolibri.coreVue.router';
-import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
 import { PageNames } from '../../constants';
 import { _collectionState, normalizeContentNode, contentState } from '../coreLearn/utils';
-
-const CUSTOM_PRESENTATION_TITLE = 'custom-channel-ui';
 
 export function showTopicsChannel(store, id) {
   return store.dispatch('loading').then(() => {
     store.commit('SET_PAGE_NAME', PageNames.TOPICS_CHANNEL);
-    // Check if the channel has a node with a custom presentation. If
-    // so, go to it directly.
-    const getParams = {
-      search: CUSTOM_PRESENTATION_TITLE,
-      kind: ContentNodeKinds.HTML5,
-      channel_id: id,
-    };
-    ContentNodeSearchResource.getCollection(getParams)
-    .fetch()
-      .then(({ results }) => {
-      if (results.length) {
-        return showTopicsContent(store, results[0].id);
-      } else {
-        return showTopicsTopic(store, { id, isRoot: true });
-      }
-    });
+    return showTopicsTopic(store, { id, isRoot: true });
   });
 }
 
