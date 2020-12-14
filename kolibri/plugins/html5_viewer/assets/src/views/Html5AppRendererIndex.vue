@@ -53,9 +53,6 @@
   import Hashi from 'hashi';
   import { nameSpace } from 'hashi/src/hashiBase';
   import plugin_data from 'plugin_data';
-  import { ContentNodeResource } from 'kolibri.resources';
-  import { getContentNodeThumbnail } from 'kolibri.utils.contentNode';
-  import axios from 'axios';
 
   // Regex vendored from https://github.com/faisalman/ua-parser-js/blob/master/src/ua-parser.js
   const iOSTest = /ip[honead]{2,4}(?:.*os\s([\w]+)\slike\smac|;\sopera)/i;
@@ -83,7 +80,7 @@
         const iOS = iOSTest.test(navigator.userAgent);
         const iOSorIE11 = iOS || IE11Test.test(navigator.userAgent);
         // Skip hashi on requests for these browsers
-        return this.defaultFile.storage_url + '?SKIP_HASHI=true' + '?date=' + (+ new Date());
+        return this.defaultFile.storage_url + (iOSorIE11 ? '?SKIP_HASHI=true' : '');
       },
       iframeHeight() {
         return (this.options && this.options.height) || defaultContentHeight;
@@ -129,27 +126,6 @@
       },
     },
     mounted() {
-      window.addEventListener('message', event => {
-        if (!event.data.event || !event.data.nameSpace || event.data.nameSpace !== 'customChannelPresentation') {
-          return;
-        }
-        if (event.data.event === 'askChannelInformation') {
-          if (!this.isInFullscreen) {
-            this.$refs.html5Renderer.toggleFullscreen();
-          }
-          this.sendChannelInformation();
-        }
-        if (event.data.event === 'goToContent') {
-          if (this.isInFullscreen) {
-            this.$refs.html5Renderer.toggleFullscreen();
-          }
-          this.goToContent(event.data.data);
-        }
-        if (event.data.event === 'getThumbnail') {
-          this.sendThumbnail(event.data.data);
-        }
-      });
-
       this.hashi = new Hashi({ iframe: this.$refs.iframe, now });
       this.hashi.onStateUpdate(data => {
         this.$emit('updateContentState', data);
@@ -169,70 +145,6 @@
       this.$emit('stopTracking');
     },
     methods: {
-      sendChannelInformation() {
-        if (!this.$refs.iframe) {
-          return;
-        }
-        const iframeWindow = this.$refs.iframe.contentWindow;
-        const channel = this.$store.state.topicsTree.channel;
-        const currentNodeId = this.$store.state.topicsTree.content.id;
-
-        ContentNodeResource.fetchCollection({
-          getParams: {
-            channel_id: channel.id,
-            user_kind: this.$store.getters.getUserKind,
-          },
-        }).then((nodes) => {
-          const promises = nodes.filter((node) => {
-            return node.id !== currentNodeId;
-          });
-
-          Promise.all(promises).then((nodes) => {
-            const event = 'sendChannelInformation';
-            const message = {
-              event,
-              nameSpace,
-              data: {channel, nodes},
-            };
-            iframeWindow.postMessage(message, '*');
-          });
-        });
-      },
-
-      sendThumbnail(id) {
-        const iframeWindow = this.$refs.iframe.contentWindow;
-        const event = 'sendThumbnail';
-        ContentNodeResource.fetchModel({ id }).then((node) => {
-          const thumbnailUrl = getContentNodeThumbnail(node);
-          if (!thumbnailUrl) {
-            const message = {
-              event,
-              nameSpace,
-              data: {id, thumbnail: null},
-            };
-            iframeWindow.postMessage(message, '*');
-            return;
-          }
-          const promise = axios.get(thumbnailUrl, {responseType: 'arraybuffer'}).then((response) => {
-              const returnedB64 = Buffer.from(response.data).toString('base64');
-              const thumbnail = "data:" + response.headers["content-type"] + ";base64," + returnedB64;
-              return thumbnail;
-          });
-          promise.then((thumbnail) => {
-            const message = {
-              event,
-              nameSpace,
-              data: {id, thumbnail},
-            };
-            iframeWindow.postMessage(message, '*');
-          });
-        });
-      },
-
-      goToContent(id) {
-        this.$router.push({ name: 'TOPICS_CONTENT', params: { id }});
-      },
-
       recordProgress() {
         const totalTime = now() - this.startTime;
         const hashiProgress = this.hashi ? this.hashi.getProgress() : null;
