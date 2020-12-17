@@ -220,7 +220,7 @@
         }
 
         return {
-          appBarTitle: this.learnString('learnLabel'),
+          appBarTitle: this.learnString('exploreLabel'),
           immersivePage: false,
         };
       },

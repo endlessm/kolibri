@@ -1,7 +1,7 @@
 <template>
 
   <CoreMenuOption
-    :label="learnString('learnLabel')"
+    :label="learnString('exploreLabel')"
     :link="url"
     icon="learn"
   />
@@ -25,10 +25,10 @@
     $trs: {},
     computed: {
       url() {
-        return urls['kolibri:kolibri.plugins.learn:learn']();
+        return urls['kolibri:kolibri.plugins.learn_custom:learn']();
       },
     },
-    priority: 10,
+    priority: 5,
   };
 
   navComponents.register(component);

@@ -86,7 +86,7 @@
     name: 'RecommendedPage',
     metaInfo() {
       return {
-        title: this.learnString('learnLabel'),
+        title: this.learnString('exploreLabel'),
       };
     },
     components: {

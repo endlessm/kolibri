@@ -10,4 +10,4 @@ from kolibri.core.decorators import cache_no_user_data
 
 @method_decorator(cache_no_user_data, name="dispatch")
 class LearnView(TemplateView):
-    template_name = "learn/learn.html"
+    template_name = "learn_custom/learn.html"
