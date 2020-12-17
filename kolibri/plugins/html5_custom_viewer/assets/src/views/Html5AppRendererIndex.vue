@@ -134,15 +134,9 @@
           return;
         }
         if (event.data.event === 'askChannelInformation') {
-          if (!this.isInFullscreen) {
-            this.$refs.html5Renderer.toggleFullscreen();
-          }
           this.sendChannelInformation();
         }
         if (event.data.event === 'goToContent') {
-          if (this.isInFullscreen) {
-            this.$refs.html5Renderer.toggleFullscreen();
-          }
           this.goToContent(event.data.data);
         }
         if (event.data.event === 'getThumbnail') {
