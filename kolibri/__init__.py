@@ -37,7 +37,7 @@ INTERNAL_PLUGINS = [
     "kolibri.plugins.html5_custom_viewer",
     "kolibri.plugins.facility",
     "kolibri.plugins.learn",
-    "kolibri.plugins.learn_custom",
+    "kolibri.plugins.explore",
     "kolibri.plugins.media_player",
     "kolibri.plugins.pdf_viewer",
     "kolibri.plugins.setup_wizard",
