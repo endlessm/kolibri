@@ -3,7 +3,7 @@
   <CoreMenuOption
     :label="learnString('exploreLabel')"
     :link="url"
-    icon="learn"
+    icon="search"
   />
 
 </template>
@@ -17,7 +17,7 @@
   import commonLearnStrings from './commonLearnStrings';
 
   const component = {
-    name: 'LearnSideNavEntry',
+    name: 'ExploreSideNavEntry',
     mixins: [commonLearnStrings],
     components: {
       CoreMenuOption,
