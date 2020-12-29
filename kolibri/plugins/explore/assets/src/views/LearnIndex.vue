@@ -57,6 +57,7 @@
   import { PageNames, ClassesPageNames } from '../constants';
   import commonLearnStrings from './commonLearnStrings';
   import ChannelsPage from './ChannelsPage';
+  import CustomChannelsPage from './CustomChannelsPage';
   import TopicsPage from './TopicsPage';
   import ContentPage from './ContentPage';
   import ContentUnavailablePage from './ContentUnavailablePage';
@@ -77,6 +78,7 @@
 
   const pageNameToComponentMap = {
     [PageNames.TOPICS_ROOT]: ChannelsPage,
+    [PageNames.TOPICS_CUSTOM_CHANNEL]: CustomChannelsPage,
     [PageNames.TOPICS_CHANNEL]: TopicsPage,
     [PageNames.TOPICS_TOPIC]: TopicsPage,
     [PageNames.TOPICS_CONTENT]: ContentPage,

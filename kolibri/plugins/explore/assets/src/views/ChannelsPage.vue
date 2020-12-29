@@ -1,6 +1,7 @@
 <template>
 
   <div>
+    <h1>Explore</h1>
     <PageHeader
       :title="coreString('channelsLabel')"
       class="visuallyhidden"

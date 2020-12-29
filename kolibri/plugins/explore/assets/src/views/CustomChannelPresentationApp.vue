@@ -11,6 +11,7 @@
 
 <script>
 
+  import { mapState } from 'vuex';
   import { nameSpace } from 'hashi/src/hashiBase';
   import { ContentNodeResource } from 'kolibri.resources';
   import { getContentNodeThumbnail } from 'kolibri.utils.contentNode';
@@ -20,9 +21,9 @@
     name: 'CustomChannelPresentationApp',
     computed: {
       rooturl() {
-        return '/zipcontent/eb6616e4c27666e0a066ae0d7734871d.zip/' + '?SKIP_HASHI=true' + '?date=' + (+ new Date());
-        // return this.defaultFile.storage_url + '?SKIP_HASHI=true' + '?date=' + (+ new Date());
+        return this.content.files[0].storage_url + '?SKIP_HASHI=true' + '?date=' + (+ new Date());
       },
+      ...mapState('topicsTree', { content: 'content' }),
     },
     mounted() {
       window.addEventListener('message', event => {

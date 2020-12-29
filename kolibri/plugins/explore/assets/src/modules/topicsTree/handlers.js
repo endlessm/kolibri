@@ -22,7 +22,7 @@ export function showTopicsChannel(store, id) {
     .fetch()
       .then(({ results }) => {
       if (results.length) {
-        return showTopicsContent(store, results[0].id);
+        return showCustomContent(store, results[0].id);
       } else {
         return showTopicsTopic(store, { id, isRoot: true });
       }
@@ -50,6 +50,36 @@ export function showTopicsContent(store, id) {
       }
       store.commit('topicsTree/SET_STATE', {
         content: contentState(content, nextContent),
+        channel: currentChannel,
+      });
+      store.commit('CORE_SET_PAGE_LOADING', false);
+      store.commit('CORE_SET_ERROR', null);
+    },
+    error => {
+      store.dispatch('handleApiError', error);
+    }
+  );
+}
+
+export function showCustomContent(store, id) {
+  store.commit('SET_EMPTY_LOGGING_STATE');
+  store.commit('CORE_SET_PAGE_LOADING', true);
+  store.commit('SET_PAGE_NAME', PageNames.TOPICS_CUSTOM_CHANNEL);
+
+  const promises = [
+    ContentNodeResource.fetchModel({ id }),
+    store.dispatch('setChannelInfo'),
+  ];
+  ConditionalPromise.all(promises).only(
+    samePageCheckGenerator(store),
+    ([content]) => {
+      const currentChannel = store.getters.getChannelObject(content.channel_id);
+      if (!currentChannel) {
+        router.replace({ name: PageNames.CONTENT_UNAVAILABLE });
+        return;
+      }
+      store.commit('topicsTree/SET_STATE', {
+        content: contentState(content, content),
         channel: currentChannel,
       });
       store.commit('CORE_SET_PAGE_LOADING', false);
