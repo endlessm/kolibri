@@ -200,6 +200,7 @@
 
             if (this.topicsTreeContent.breadcrumbs.length > 0) {
               appBarTitle = lastItem(this.topicsTreeContent.breadcrumbs).title;
+              immersivePageRoute = this.lastRoute || this.$router.getRoute(PageNames.TOPICS_ROOT);
             } else {
               // `breadcrumbs` is empty if the direct parent is the channel, so pull
               // channel info from state.topicsTree.channel
