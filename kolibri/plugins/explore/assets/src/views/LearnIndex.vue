@@ -6,15 +6,8 @@
     :authorized="userIsAuthorized"
     authorizedRole="registeredUser"
     v-bind="immersivePageProps"
-    :maxMainWidth="maxWidth"
+    :maxMainWidth="Infinity"
   >
-    <template slot="app-bar-actions">
-      <ActionBarSearchBox v-if="showSearch" />
-    </template>
-
-    <LearnTopNav slot="sub-nav" />
-
-    <TotalPoints slot="totalPointsMenuItem" />
 
     <!--
       Topics pages have a different heading style which
@@ -65,13 +58,11 @@
   import SearchPage from './SearchPage';
   import ExamPage from './ExamPage';
   import ExamReportViewer from './LearnExamReportViewer';
-  import TotalPoints from './TotalPoints';
   import AllClassesPage from './classes/AllClassesPage';
   import ClassAssignmentsPage from './classes/ClassAssignmentsPage';
   import LessonPlaylistPage from './classes/LessonPlaylistPage';
   import LessonResourceViewer from './classes/LessonResourceViewer';
   import ActionBarSearchBox from './ActionBarSearchBox';
-  import LearnTopNav from './LearnTopNav';
   import { ASSESSMENT_FOOTER, QUIZ_FOOTER } from './footers.js';
   import UpdateYourProfileModal from './UpdateYourProfileModal';
   import plugin_data from 'plugin_data';
@@ -98,8 +89,6 @@
       ActionBarSearchBox,
       Breadcrumbs,
       CoreBase,
-      LearnTopNav,
-      TotalPoints,
       UpdateYourProfileModal,
     },
     mixins: [commonCoreStrings, commonLearnStrings, responsiveWindowMixin],
