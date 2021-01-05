@@ -1,34 +1,44 @@
 <template>
 
-  <KGrid>
-    <KGridItem
-      v-for="content in contents"
-      :key="content.id"
-      :layout="{ span: cardColumnSpan }"
-    >
-      <ChannelCard
-        :isMobile="windowIsSmall"
-        :title="content.title"
-        :thumbnail="content.thumbnail"
-        :kind="content.kind"
-        :tagline="getTagLine(content)"
-        :progress="content.progress || 0"
-        :numCoachContents="content.num_coach_contents"
-        :link="genContentLink(content.id, content.kind)"
-        :contentId="content.content_id"
-        :copiesCount="content.copies_count"
-        @openCopiesModal="openCopiesModal"
-      />
-    </KGridItem>
+  <div class="container" ref="container">
+    <div class="carousel" ref="carousel">
+      <div
+        class="carousel-item"
+        v-for="content in contents"
+        :key="content.id"
+      >
+        <ChannelCard
+          :isMobile="windowIsSmall"
+          :title="content.title"
+          :thumbnail="content.thumbnail"
+          :kind="content.kind"
+          :tagline="getTagLine(content)"
+          :progress="content.progress || 0"
+          :numCoachContents="content.num_coach_contents"
+          :link="genContentLink(content.id, content.kind)"
+          :contentId="content.content_id"
+          :copiesCount="content.copies_count"
+          @openCopiesModal="openCopiesModal"
+        />
+      </div>
 
-    <CopiesModal
-      v-if="modalIsOpen"
-      :uniqueId="uniqueId"
-      :sharedContentId="sharedContentId"
-      @submit="modalIsOpen = false"
-    />
-  </KGrid>
+    </div>
 
+    <KIconButton
+      class="left-button"
+      v-if="leftButton"
+      size="large"
+      appearance="raised-button"
+      @click="scrollLeft"
+      icon="chevronLeft" />
+    <KIconButton
+      class="right-button"
+      v-if="rightButton"
+      size="large"
+      appearance="raised-button"
+      @click="scrollRight"
+      icon="chevronRight" />
+  </div>
 </template>
 
 
@@ -37,13 +47,11 @@
   import { validateLinkObject } from 'kolibri.utils.validators';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
   import ChannelCard from './ChannelCard';
-  import CopiesModal from './CopiesModal';
 
   export default {
     name: 'ChannelCardGroupGrid',
     components: {
       ChannelCard,
-      CopiesModal,
     },
     mixins: [responsiveWindowMixin],
     props: {
@@ -64,15 +72,21 @@
       modalIsOpen: false,
       sharedContentId: null,
       uniqueId: null,
+      isMounted: false,
+      leftButton: false,
+      rightButton: false,
+      offset: 0,
+      scrollOffset: 610,
     }),
-    computed: {
-      cardColumnSpan() {
-        if (this.windowBreakpoint <= 2) return 4;
-        if (this.windowBreakpoint <= 3) return 6;
-        if (this.windowBreakpoint <= 6) return 4;
-        return 3;
-      },
+
+    mounted() {
+      this.isMounted = true;
+      this.smoothScroll(0);
     },
+
+    computed: {
+    },
+
     methods: {
       openCopiesModal(contentId) {
         this.sharedContentId = contentId;
@@ -82,10 +96,78 @@
       getTagLine(content) {
         return content.tagline || content.description;
       },
+      scrollLeft() {
+        this.smoothScroll(this.scrollOffset);
+      },
+      scrollRight() {
+        this.smoothScroll(-this.scrollOffset);
+      },
+      smoothScroll(offset) {
+        const carousel = this.$refs.carousel;
+        const elements = this.contents.length;
+        const carouselWidth = elements * this.scrollOffset;
+        let maxOffset = carouselWidth - carousel.offsetWidth;
+
+        if (carousel.offsetWidth > carouselWidth) {
+          maxOffset = 0;
+        }
+
+        this.leftButton = true;
+        this.rightButton = true;
+        this.offset += offset;
+
+        // Left boundary, hide the left button
+        if (this.offset >= 0) {
+          this.offset = 0;
+          this.leftButton = false;
+        }
+
+        // Right boundary, hide the right button
+        if (this.offset <= -maxOffset) {
+          this.rightButton = false;
+          this.offset = -maxOffset;
+        }
+
+        carousel.setAttribute(
+          'style',
+          `transform: translate3d(${this.offset}px, 0, 0)`,
+        );
+      },
     },
   };
 
 </script>
 
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .carousel {
+    display: flex;
+    flex-wrap: nowrap;
+    transition: transform 0.3s ease-out;
+  }
+
+  .carousel-item {
+    min-width: 600px;
+    margin: 5px;
+  }
+
+  .container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .left-button,
+  .right-button {
+    color: white;
+    position: absolute;
+    top: calc(50% - 48px);
+  }
+
+  .left-button {
+    left: 5px;
+  }
+
+  .right-button {
+    right: 5px;
+  }
+</style>

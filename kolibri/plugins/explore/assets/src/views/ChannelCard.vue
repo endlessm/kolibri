@@ -7,39 +7,23 @@
     :class="$computedClass({ ':focus': $coreOutline })"
   >
 
-    <h3
-      class="title"
-      dir="auto"
-      :style="{ borderBottom: `1px solid ${$themeTokens.fineLine}` }"
-    >
-      {{ title }}
-    </h3>
+    <div class="overlay">
+    </div>
 
-
-    <ProgressIcon
-      v-if="progress > 0"
-      class="progress-icon"
-      :progress="progress"
-    />
-
-
-    <KFixedGrid numCols="4" gutter="16" style="margin: 0 16px;">
-      <KFixedGridItem span="1">
-        <CardThumbnail
-          class="thumbnail"
-          v-bind="{ thumbnail, kind, isMobile }"
-          :showTooltip="false"
-          :showContentIcon="false"
-        />
-      </KFixedGridItem>
-      <KFixedGridItem span="3">
-        <TextTruncator
-          :text="tagline"
-          :maxHeight="taglineHeight"
-          :showTooltip="false"
-        />
-      </KFixedGridItem>
-    </KFixedGrid>
+    <div class="card-content">
+      <h3
+        class="title"
+        dir="auto"
+        :style="{ borderBottom: `1px solid ${$themeTokens.fineLine}` }"
+      >
+        {{ title }}
+      </h3>
+      <TextTruncator
+        :text="tagline"
+        :maxHeight="taglineHeight"
+        :showTooltip="false"
+      />
+    </div>
 
     <CoachContentLabel
       v-if="isUserLoggedIn && !isLearner"
@@ -122,12 +106,13 @@
         return this.kind === ContentNodeKinds.TOPIC || this.kind === ContentNodeKinds.CHANNEL;
       },
       overallHeight() {
-        return 258;
+        return 400;
       },
       cardStyle() {
         return {
-          backgroundColor: this.$themeTokens.surface,
-          color: this.$themeTokens.text,
+          // backgroundColor: this.$themeTokens.surface,
+          backgroundImage: `url(https://picsum.photos/600/400?random=${Math.random()*10})`,
+          color: 'white',
           marginBottom: `${this.windowGutter}px`,
           minHeight: `${this.overallHeight}px`,
         };
@@ -164,7 +149,6 @@
     padding-bottom: $margin;
     text-decoration: none;
     vertical-align: top;
-    border-radius: $radius;
     transition: box-shadow $core-time ease;
     &:hover {
       @extend %dropshadow-8dp;
@@ -188,6 +172,31 @@
 
   /deep/.card-thumbnail-wrapper {
     max-width: 100%;
+  }
+
+  $position: relative;
+
+  .overlay {
+    background-image: linear-gradient(to top, black, transparent 50%);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .overlay:hover {
+    background-image: linear-gradient(to top, black, transparent 80%);
+  }
+
+  .card-content {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+
+  h3.title {
+    padding-left: 0px;
   }
 
 </style>
