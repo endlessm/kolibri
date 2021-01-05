@@ -48,3 +48,5 @@ export const pageNameToModuleMap = {
   [PageNames.TOPICS_TOPIC]: 'topicsTree',
   [PageNames.RECOMMENDED_CONTENT]: 'topicsTree',
 };
+
+export const CUSTOM_PRESENTATION_TITLE = 'custom-channel-ui';

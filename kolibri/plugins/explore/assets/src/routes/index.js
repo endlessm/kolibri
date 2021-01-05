@@ -12,7 +12,7 @@ import {
   showNextStepsPage,
   showResumePage,
 } from '../modules/recommended/handlers';
-import { showChannels } from '../modules/topicsRoot/handlers';
+import { showChannels, showFilteredChannels } from '../modules/topicsRoot/handlers';
 import { PageNames, ClassesPageNames } from '../constants';
 import RecommendedPage from '../views/RecommendedPage';
 import RecommendedSubpage from '../views/RecommendedSubpage';
@@ -53,7 +53,8 @@ export default [
       if (unassignedContentGuard()) {
         return unassignedContentGuard();
       }
-      showChannels(store);
+      // showChannels(store);
+      showFilteredChannels(store);
     },
   },
   {

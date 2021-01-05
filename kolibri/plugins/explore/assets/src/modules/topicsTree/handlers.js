@@ -3,10 +3,8 @@ import samePageCheckGenerator from 'kolibri.utils.samePageCheckGenerator';
 import ConditionalPromise from 'kolibri.lib.conditionalPromise';
 import router from 'kolibri.coreVue.router';
 import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
-import { PageNames } from '../../constants';
+import { PageNames, CUSTOM_PRESENTATION_TITLE } from '../../constants';
 import { _collectionState, normalizeContentNode, contentState } from '../coreLearn/utils';
-
-const CUSTOM_PRESENTATION_TITLE = 'custom-channel-ui';
 
 export function showTopicsChannel(store, id) {
   return store.dispatch('loading').then(() => {
