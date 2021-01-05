@@ -2,12 +2,17 @@
 
   <CoreBase
     :marginBottom="bottomSpaceReserved"
-    :showSubNav="topNavIsVisible"
     :authorized="userIsAuthorized"
     authorizedRole="registeredUser"
     v-bind="immersivePageProps"
     :maxMainWidth="Infinity"
   >
+    <template slot="app-bar-actions" v-if="pageName !== 'TOPICS_ROOT'">
+      <router-link
+        class="rm-link-style"
+        :style="{ color: $themeTokens.textInverted }"
+        to="/">Back</router-link>
+    </template>
 
     <!--
       Topics pages have a different heading style which
@@ -218,13 +223,6 @@
       showSearch() {
         return this.pageName !== PageNames.SEARCH && this.canAccessUnassignedContent;
       },
-      topNavIsVisible() {
-        return (
-          this.pageName !== PageNames.CONTENT_UNAVAILABLE &&
-          this.pageName !== PageNames.SEARCH &&
-          !this.immersivePageProps.immersivePage
-        );
-      },
       bottomSpaceReserved() {
         if (this.pageName === ClassesPageNames.EXAM_VIEWER) {
           return QUIZ_FOOTER;
@@ -324,6 +322,10 @@
 
   .content {
     margin: auto;
+  }
+
+  .rm-link-style {
+    text-decoration: none;
   }
 
 </style>
