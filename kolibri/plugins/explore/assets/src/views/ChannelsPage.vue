@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div class="channels">
     <h1>Explore</h1>
     <PageHeader
       :title="coreString('channelsLabel')"
@@ -38,7 +38,14 @@
     },
     mixins: [commonCoreStrings],
     computed: {
-      ...mapState('topicsRoot', { channels: 'rootNodes' }),
+      // TODO: Remove this
+      // This just multiplies the number of entries for testing
+      channels() {
+        let nodes = this.$store.state.topicsRoot.rootNodes;
+        nodes = [...nodes, ...nodes, ...nodes, ...nodes];
+        return nodes;
+      },
+      // ...mapState('topicsRoot', { channels: 'rootNodes' }),
     },
     methods: {
       genChannelLink(channel_id) {
@@ -57,9 +64,15 @@
 
 
 <style lang="scss" scoped>
-
   .grid {
     margin-top: 24px;
   }
 
+  .channels {
+    background-color: #3A3A3A;
+    color: white;
+
+    min-height: 600px;
+    padding: 20px;
+  }
 </style>
