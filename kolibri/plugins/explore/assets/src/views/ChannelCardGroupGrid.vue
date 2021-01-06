@@ -10,6 +10,7 @@
         <ChannelCard
           :isMobile="windowIsSmall"
           :title="content.title"
+          :backgroundImage="getBackgroundImage(content)"
           :thumbnail="content.thumbnail"
           :kind="content.kind"
           :tagline="getTagLine(content)"
@@ -76,7 +77,7 @@
       leftButton: false,
       rightButton: false,
       offset: 0,
-      scrollOffset: 610,
+      scrollOffset: 510,
     }),
 
     mounted() {
@@ -95,6 +96,13 @@
       },
       getTagLine(content) {
         return content.tagline || content.description;
+      },
+      getBackgroundImage(content) {
+        if (content.html5Thumbnail) {
+          return `url(${content.html5Thumbnail})`;
+        }
+        // Random image if there's no thumnail
+        return `url(https://picsum.photos/500/300?random=${Math.random()*10})`;
       },
       scrollLeft() {
         this.smoothScroll(this.scrollOffset);
@@ -147,7 +155,7 @@
   }
 
   .carousel-item {
-    min-width: 600px;
+    min-width: 500px;
     margin: 5px;
   }
 

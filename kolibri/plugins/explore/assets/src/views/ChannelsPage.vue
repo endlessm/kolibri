@@ -38,14 +38,7 @@
     },
     mixins: [commonCoreStrings],
     computed: {
-      // TODO: Remove this
-      // This just multiplies the number of entries for testing
-      channels() {
-        let nodes = this.$store.state.topicsRoot.rootNodes;
-        nodes = [...nodes, ...nodes, ...nodes, ...nodes];
-        return nodes;
-      },
-      // ...mapState('topicsRoot', { channels: 'rootNodes' }),
+      ...mapState('topicsRoot', { channels: 'rootNodes' }),
     },
     methods: {
       genChannelLink(channel_id) {
