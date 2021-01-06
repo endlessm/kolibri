@@ -76,6 +76,10 @@ export function showFilteredChannels(store) {
               .fetch()
                 .then(({ results }) => {
                 if (results.length) {
+                  const thumb = results[0].files.find(file => file.preset.endsWith('thumbnail'));
+                  if (thumb) {
+                    node.html5Thumbnail = thumb.storage_url;
+                  }
                   return node;
                 }
               });

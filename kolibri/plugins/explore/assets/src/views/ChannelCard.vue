@@ -23,6 +23,7 @@
         :maxHeight="taglineHeight"
         :showTooltip="false"
       />
+
     </div>
 
     <CoachContentLabel
@@ -59,6 +60,10 @@
     mixins: [responsiveWindowMixin],
     props: {
       title: {
+        type: String,
+        required: true,
+      },
+      backgroundImage: {
         type: String,
         required: true,
       },
@@ -106,12 +111,11 @@
         return this.kind === ContentNodeKinds.TOPIC || this.kind === ContentNodeKinds.CHANNEL;
       },
       overallHeight() {
-        return 400;
+        return 300;
       },
       cardStyle() {
         return {
-          // backgroundColor: this.$themeTokens.surface,
-          backgroundImage: `url(https://picsum.photos/600/400?random=${Math.random()*10})`,
+          backgroundImage: this.backgroundImage,
           color: 'white',
           marginBottom: `${this.windowGutter}px`,
           minHeight: `${this.overallHeight}px`,
@@ -149,9 +153,12 @@
     padding-bottom: $margin;
     text-decoration: none;
     vertical-align: top;
+    background-size: cover;
     transition: box-shadow $core-time ease;
+    transition: transform $core-time ease;
     &:hover {
       @extend %dropshadow-8dp;
+      transform: scale(1.01);
     }
     &:focus {
       outline-width: 4px;
