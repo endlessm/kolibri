@@ -130,6 +130,7 @@
   .custom-presentation-iframe {
     // Remove header size (64px) and 5px for avoiding scrollbar.
     height: calc(100vh - 64px - 5px);
+    margin-bottom: -5px;
     width: 100%;
   }
 
