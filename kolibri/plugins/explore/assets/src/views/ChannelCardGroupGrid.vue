@@ -8,10 +8,8 @@
         :key="content.id"
       >
         <ChannelCard
-          :isMobile="windowIsSmall"
           :title="content.title"
           :backgroundImage="getBackgroundImage(content)"
-          :thumbnail="content.thumbnail"
           :kind="content.kind"
           :tagline="getTagLine(content)"
           :progress="content.progress || 0"

@@ -10,6 +10,12 @@
     <div class="overlay">
     </div>
 
+    <ProgressIcon
+      v-if="progress > 0"
+      class="progress-icon"
+      :progress="progress"
+    />
+
     <div class="card-content">
       <h3
         class="title"
@@ -47,12 +53,10 @@
   import CoachContentLabel from 'kolibri.coreVue.components.CoachContentLabel';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
   import ProgressIcon from 'kolibri.coreVue.components.ProgressIcon';
-  import CardThumbnail from './ContentCard/CardThumbnail';
 
   export default {
     name: 'ChannelCard',
     components: {
-      CardThumbnail,
       CoachContentLabel,
       TextTruncator,
       ProgressIcon,
@@ -68,10 +72,6 @@
         required: true,
       },
       tagline: {
-        type: String,
-        required: false,
-      },
-      thumbnail: {
         type: String,
         required: false,
       },
@@ -99,10 +99,6 @@
         type: Object,
         required: true,
         validator: validateLinkObject,
-      },
-      isMobile: {
-        type: Boolean,
-        default: false,
       },
     },
     computed: {
