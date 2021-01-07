@@ -57,10 +57,6 @@
   import { getContentNodeThumbnail } from 'kolibri.utils.contentNode';
   import axios from 'axios';
 
-  // Regex vendored from https://github.com/faisalman/ua-parser-js/blob/master/src/ua-parser.js
-  const iOSTest = /ip[honead]{2,4}(?:.*os\s([\w]+)\slike\smac|;\sopera)/i;
-  const IE11Test = /(trident).+rv[:\s]([\w.]+).+like\sgecko/i;
-
   const defaultContentHeight = '500px';
   const frameTopbarHeight = '37px';
   const pxStringAdd = (x, y) => parseInt(x, 10) + parseInt(y, 10) + 'px';
@@ -80,8 +76,6 @@
         return nameSpace;
       },
       rooturl() {
-        const iOS = iOSTest.test(navigator.userAgent);
-        const iOSorIE11 = iOS || IE11Test.test(navigator.userAgent);
         // Skip hashi on requests for these browsers
         return this.defaultFile.storage_url + '?SKIP_HASHI=true' + '?date=' + (+ new Date());
       },

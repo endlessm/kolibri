@@ -104,7 +104,7 @@
       };
     },
     computed: {
-      ...mapGetters(['isUserLoggedIn', 'canAccessUnassignedContent']),
+      ...mapGetters(['isUserLoggedIn']),
       ...mapState('lessonPlaylist/resource', {
         lessonContent: 'content',
         currentLesson: 'currentLesson',
@@ -221,9 +221,6 @@
           immersivePage: false,
         };
       },
-      showSearch() {
-        return this.pageName !== PageNames.SEARCH && this.canAccessUnassignedContent;
-      },
       bottomSpaceReserved() {
         if (this.pageName === ClassesPageNames.EXAM_VIEWER) {
           return QUIZ_FOOTER;
@@ -240,12 +237,6 @@
         const isAssessment = content && content.assessment;
         // height of .attempts-container in AssessmentWrapper
         return isAssessment ? ASSESSMENT_FOOTER : 0;
-      },
-      maxWidth() {
-        // ref: https://www.figma.com/file/zbxBoJUUkOynZtgK0wO9KD/Channel-descriptions?node-id=281%3A1270
-        if (this.pageName !== PageNames.TOPICS_ROOT) return undefined;
-        if (this.windowBreakpoint <= 1) return 400;
-        return 1800;
       },
       profileNeedsUpdate() {
         return (
