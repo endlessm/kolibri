@@ -154,6 +154,7 @@
     transition: transform $core-time ease;
     &:hover {
       @extend %dropshadow-8dp;
+
       transform: scale(1.01);
     }
     &:focus {
@@ -180,12 +181,12 @@
   $position: relative;
 
   .overlay {
-    background-image: linear-gradient(to top, black, transparent 50%);
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    background-image: linear-gradient(to top, black, transparent 50%);
   }
 
   .overlay:hover {
@@ -199,7 +200,7 @@
   }
 
   h3.title {
-    padding-left: 0px;
+    padding-left: 0;
   }
 
 </style>

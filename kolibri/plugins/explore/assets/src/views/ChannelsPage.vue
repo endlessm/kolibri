@@ -57,15 +57,16 @@
 
 
 <style lang="scss" scoped>
+
   .grid {
     margin-top: 24px;
   }
 
   .channels {
-    background-color: #3A3A3A;
-    color: white;
-
     min-height: 600px;
     padding: 20px;
+    color: white;
+    background-color: #3a3a3a;
   }
+
 </style>

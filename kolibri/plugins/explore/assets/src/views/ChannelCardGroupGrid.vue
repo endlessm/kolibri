@@ -1,11 +1,11 @@
 <template>
 
-  <div class="container" ref="container">
-    <div class="carousel" ref="carousel">
+  <div ref="container" class="container">
+    <div ref="carousel" class="carousel">
       <div
-        class="carousel-item"
         v-for="content in contents"
         :key="content.id"
+        class="carousel-item"
       >
         <ChannelCard
           :title="content.title"
@@ -24,20 +24,23 @@
     </div>
 
     <KIconButton
-      class="left-button"
       v-if="leftButton"
+      class="left-button"
       size="large"
       appearance="raised-button"
+      icon="chevronLeft"
       @click="scrollLeft"
-      icon="chevronLeft" />
+    />
     <KIconButton
-      class="right-button"
       v-if="rightButton"
+      class="right-button"
       size="large"
       appearance="raised-button"
+      icon="chevronRight"
       @click="scrollRight"
-      icon="chevronRight" />
+    />
   </div>
+
 </template>
 
 
@@ -78,12 +81,11 @@
       scrollOffset: 510,
     }),
 
+    computed: {},
+
     mounted() {
       this.isMounted = true;
       this.smoothScroll(0);
-    },
-
-    computed: {
     },
 
     methods: {
@@ -100,7 +102,7 @@
           return `url(${content.html5Thumbnail})`;
         }
         // Random image if there's no thumnail
-        return `url(https://picsum.photos/500/300?random=${Math.random()*10})`;
+        return `url(https://picsum.photos/500/300?random=${Math.random() * 10})`;
       },
       scrollLeft() {
         this.smoothScroll(this.scrollOffset);
@@ -109,7 +111,7 @@
         this.smoothScroll(-this.scrollOffset);
       },
       smoothScroll(offset) {
-        const carousel = this.$refs.carousel;
+        const { carousel } = this.$refs;
         const elements = this.contents.length;
         const carouselWidth = elements * this.scrollOffset;
         let maxOffset = carouselWidth - carousel.offsetWidth;
@@ -134,10 +136,7 @@
           this.offset = -maxOffset;
         }
 
-        carousel.setAttribute(
-          'style',
-          `transform: translate3d(${this.offset}px, 0, 0)`,
-        );
+        carousel.setAttribute('style', `transform: translate3d(${this.offset}px, 0, 0)`);
       },
     },
   };
@@ -146,6 +145,7 @@
 
 
 <style lang="scss" scoped>
+
   .carousel {
     display: flex;
     flex-wrap: nowrap;
@@ -164,9 +164,9 @@
 
   .left-button,
   .right-button {
-    color: white;
     position: absolute;
     top: calc(50% - 48px);
+    color: white;
   }
 
   .left-button {
@@ -176,4 +176,5 @@
   .right-button {
     right: 5px;
   }
+
 </style>

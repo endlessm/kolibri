@@ -1,4 +1,8 @@
-import { ContentNodeResource, ContentNodeSearchResource, ContentNodeProgressResource } from 'kolibri.resources';
+import {
+  ContentNodeResource,
+  ContentNodeSearchResource,
+  ContentNodeProgressResource,
+} from 'kolibri.resources';
 import samePageCheckGenerator from 'kolibri.utils.samePageCheckGenerator';
 import ConditionalPromise from 'kolibri.lib.conditionalPromise';
 import router from 'kolibri.coreVue.router';
@@ -17,14 +21,13 @@ export function showTopicsChannel(store, id) {
       channel_id: id,
     };
     ContentNodeSearchResource.getCollection(getParams)
-    .fetch()
+      .fetch()
       .then(({ results }) => {
-      if (results.length) {
-        return showCustomContent(store, results[0].id);
-      } else {
+        if (results.length) {
+          return showCustomContent(store, results[0].id);
+        }
         return showTopicsTopic(store, { id, isRoot: true });
-      }
-    });
+      });
   });
 }
 
@@ -64,10 +67,7 @@ export function showCustomContent(store, id) {
   store.commit('CORE_SET_PAGE_LOADING', true);
   store.commit('SET_PAGE_NAME', PageNames.TOPICS_CUSTOM_CHANNEL);
 
-  const promises = [
-    ContentNodeResource.fetchModel({ id }),
-    store.dispatch('setChannelInfo'),
-  ];
+  const promises = [ContentNodeResource.fetchModel({ id }), store.dispatch('setChannelInfo')];
   ConditionalPromise.all(promises).only(
     samePageCheckGenerator(store),
     ([content]) => {

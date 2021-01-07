@@ -52,14 +52,14 @@
   import CoreFullscreen from 'kolibri.coreVue.components.CoreFullscreen';
   import Hashi from 'hashi';
   import { nameSpace } from 'hashi/src/hashiBase';
-  import plugin_data from 'plugin_data';
   import { ContentNodeResource } from 'kolibri.resources';
   import { getContentNodeThumbnail } from 'kolibri.utils.contentNode';
   import axios from 'axios';
+  import plugin_data from 'plugin_data';
 
   const defaultContentHeight = '500px';
   const frameTopbarHeight = '37px';
-  const pxStringAdd = (x, y) => parseInt(x, 10) + parseInt(y, 10) + 'px';
+  const pxStringAdd = (x, y) => `${parseInt(x, 10) + parseInt(y, 10)}px`;
 
   export default {
     name: 'Html5AppRendererIndex',
@@ -77,7 +77,7 @@
       },
       rooturl() {
         // Skip hashi on requests for these browsers
-        return this.defaultFile.storage_url + '?SKIP_HASHI=true' + '?date=' + (+ new Date());
+        return `${this.defaultFile.storage_url}?SKIP_HASHI=true` + `?date=${+new Date()}`;
       },
       iframeHeight() {
         return (this.options && this.options.height) || defaultContentHeight;
@@ -124,7 +124,11 @@
     },
     mounted() {
       window.addEventListener('message', event => {
-        if (!event.data.event || !event.data.nameSpace || event.data.nameSpace !== 'customChannelPresentation') {
+        if (
+          !event.data.event ||
+          !event.data.nameSpace ||
+          event.data.nameSpace !== 'customChannelPresentation'
+        ) {
           return;
         }
         if (event.data.event === 'askChannelInformation') {
@@ -162,7 +166,7 @@
           return;
         }
         const iframeWindow = this.$refs.iframe.contentWindow;
-        const channel = this.$store.state.topicsTree.channel;
+        const { channel } = this.$store.state.topicsTree;
         const currentNodeId = this.$store.state.topicsTree.content.id;
 
         ContentNodeResource.fetchCollection({
@@ -170,17 +174,17 @@
             channel_id: channel.id,
             user_kind: this.$store.getters.getUserKind,
           },
-        }).then((nodes) => {
-          const promises = nodes.filter((node) => {
+        }).then(nodes => {
+          const promises = nodes.filter(node => {
             return node.id !== currentNodeId;
           });
 
-          Promise.all(promises).then((nodes) => {
+          Promise.all(promises).then(nodes => {
             const event = 'sendChannelInformation';
             const message = {
               event,
               nameSpace,
-              data: {channel, nodes},
+              data: { channel, nodes },
             };
             iframeWindow.postMessage(message, '*');
           });
@@ -190,27 +194,29 @@
       sendThumbnail(id) {
         const iframeWindow = this.$refs.iframe.contentWindow;
         const event = 'sendThumbnail';
-        ContentNodeResource.fetchModel({ id }).then((node) => {
+        ContentNodeResource.fetchModel({ id }).then(node => {
           const thumbnailUrl = getContentNodeThumbnail(node);
           if (!thumbnailUrl) {
             const message = {
               event,
               nameSpace,
-              data: {id, thumbnail: null},
+              data: { id, thumbnail: null },
             };
             iframeWindow.postMessage(message, '*');
             return;
           }
-          const promise = axios.get(thumbnailUrl, {responseType: 'arraybuffer'}).then((response) => {
+          const promise = axios
+            .get(thumbnailUrl, { responseType: 'arraybuffer' })
+            .then(response => {
               const returnedB64 = Buffer.from(response.data).toString('base64');
-              const thumbnail = "data:" + response.headers["content-type"] + ";base64," + returnedB64;
+              const thumbnail = `data:${response.headers['content-type']};base64,${returnedB64}`;
               return thumbnail;
-          });
-          promise.then((thumbnail) => {
+            });
+          promise.then(thumbnail => {
             const message = {
               event,
               nameSpace,
-              data: {id, thumbnail},
+              data: { id, thumbnail },
             };
             iframeWindow.postMessage(message, '*');
           });
@@ -218,7 +224,7 @@
       },
 
       goToContent(id) {
-        this.$router.push({ name: 'TOPICS_CONTENT', params: { id }});
+        this.$router.push({ name: 'TOPICS_CONTENT', params: { id } });
       },
 
       recordProgress() {

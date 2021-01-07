@@ -7,11 +7,14 @@
     v-bind="immersivePageProps"
     :maxMainWidth="Infinity"
   >
-    <template slot="app-bar-actions" v-if="pageName !== 'TOPICS_ROOT'">
+    <template v-if="pageName !== 'TOPICS_ROOT'" slot="app-bar-actions">
       <router-link
         class="rm-link-style"
         :style="{ color: $themeTokens.textInverted }"
-        to="/">Back</router-link>
+        to="/"
+      >
+        Back
+      </router-link>
     </template>
 
     <!--
