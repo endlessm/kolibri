@@ -2,8 +2,7 @@
 
   <iframe
     ref="iframe"
-    class="iframe"
-    :style="{ backgroundColor: 'blue', height: '600px', width: '100%' }"
+    class="custom-presentation-iframe"
     frameBorder="0"
     :src="rooturl"
   >
@@ -118,3 +117,20 @@
   };
 
 </script>
+
+
+<style lang="scss">
+  // NOTE: This style is NOT scoped! Because it overrides margin and padding for .content
+
+  .content {
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .custom-presentation-iframe {
+    // Remove header size (64px) and 5px for avoiding scrollbar.
+    height: calc(100vh - 64px - 5px);
+    width: 100%;
+  }
+
+</style>
