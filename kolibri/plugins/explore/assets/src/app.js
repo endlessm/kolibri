@@ -5,7 +5,7 @@ import { setFacilitiesAndConfig } from './modules/coreExplore/actions';
 import pluginModule from './modules/pluginModule';
 import KolibriApp from 'kolibri_app';
 
-class LearnModule extends KolibriApp {
+class ExploreModule extends KolibriApp {
   get stateSetters() {
     return [setFacilitiesAndConfig];
   }
@@ -28,4 +28,4 @@ class LearnModule extends KolibriApp {
   }
 }
 
-export default new LearnModule();
+export default new ExploreModule();

@@ -155,7 +155,7 @@
 
 <style lang="scss" scoped>
 
-  @import './learn';
+  @import './explore';
 
   .content {
     margin: auto;
