@@ -3,7 +3,6 @@ import { createTranslator } from 'kolibri.utils.i18n';
 export const learnStrings = createTranslator('CommonLearnStrings', {
   // Labels
   exploreLabel: 'Explore',
-  recommendedLabel: 'Recommended',
 });
 
 export default {
