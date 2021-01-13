@@ -19,7 +19,6 @@ from kolibri.plugins.hooks import register_hook
 
 
 class Learn(KolibriPluginBase):
-    untranslated_view_urls = "api_urls"
     translated_view_urls = "urls"
 
 
