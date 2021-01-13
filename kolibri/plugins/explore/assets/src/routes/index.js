@@ -1,22 +1,12 @@
 import store from 'kolibri.coreVue.vuex.store';
 import router from 'kolibri.coreVue.router';
-import { showSearch } from '../modules/search/handlers';
 import {
   showTopicsTopic,
   showTopicsChannel,
   showTopicsContent,
 } from '../modules/topicsTree/handlers';
-import {
-  showRecommended,
-  showPopularPage,
-  showNextStepsPage,
-  showResumePage,
-} from '../modules/recommended/handlers';
 import { showFilteredChannels } from '../modules/topicsRoot/handlers';
 import { PageNames, ClassesPageNames } from '../constants';
-import RecommendedPage from '../views/RecommendedPage';
-import RecommendedSubpage from '../views/RecommendedSubpage';
-import classesRoutes from './classesRoutes';
 
 function unassignedContentGuard() {
   const { canAccessUnassignedContent } = store.getters;
@@ -29,7 +19,6 @@ function unassignedContentGuard() {
 }
 
 export default [
-  ...classesRoutes,
   {
     name: PageNames.ROOT,
     path: '/',
@@ -54,27 +43,6 @@ export default [
         return unassignedContentGuard();
       }
       showFilteredChannels(store);
-    },
-  },
-  {
-    name: PageNames.RECOMMENDED,
-    path: '/recommended',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showRecommended(store);
-    },
-    component: RecommendedPage,
-  },
-  {
-    name: PageNames.SEARCH,
-    path: '/search',
-    handler: toRoute => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showSearch(store, { ...toRoute.query });
     },
   },
   {
@@ -115,39 +83,6 @@ export default [
       }
       showTopicsContent(store, toRoute.params.id);
     },
-  },
-  {
-    name: PageNames.RECOMMENDED_POPULAR,
-    path: '/recommended/popular',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showPopularPage(store);
-    },
-    component: RecommendedSubpage,
-  },
-  {
-    name: PageNames.RECOMMENDED_RESUME,
-    path: '/recommended/resume',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showResumePage(store);
-    },
-    component: RecommendedSubpage,
-  },
-  {
-    name: PageNames.RECOMMENDED_NEXT_STEPS,
-    path: '/recommended/nextsteps',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showNextStepsPage(store);
-    },
-    component: RecommendedSubpage,
   },
   {
     path: '*',

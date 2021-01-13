@@ -161,7 +161,6 @@
   import ContentCardGroupCarousel from './ContentCardGroupCarousel';
   import AssessmentWrapper from './AssessmentWrapper';
   import MasteredSnackbars from './MasteredSnackbars';
-  import { lessonResourceViewerLink } from './classes/classPageLinks';
   import commonLearnStrings from './commonLearnStrings';
 
   export default {
@@ -263,10 +262,6 @@
         return `${this.primaryFile.checksum}.${this.primaryFile.extension}`;
       },
       nextContentLink() {
-        // HACK Use a the Resource Viewer Link instead
-        if (this.pageName === ClassesPageNames.LESSON_RESOURCE_VIEWER) {
-          return lessonResourceViewerLink(Number(this.$route.params.resourceNumber) + 1);
-        }
         return {
           name:
             this.content.next_content.kind === ContentNodeKinds.TOPIC

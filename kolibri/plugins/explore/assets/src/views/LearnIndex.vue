@@ -22,25 +22,14 @@
       includes passing the breadcrumbs
     -->
     <div v-if="currentPageIsTopic">
-      <component :is="currentPage">
-        <Breadcrumbs slot="breadcrumbs" />
-      </component>
+      <component :is="currentPage" />
       <router-view />
     </div>
 
     <div v-else>
-      <Breadcrumbs v-if="pageName !== 'TOPICS_CONTENT'" />
       <component :is="currentPage" v-if="currentPage" />
       <router-view />
     </div>
-
-    <UpdateYourProfileModal
-      v-if="profileNeedsUpdate"
-      :disabled="demographicInfo === null || !userPluginUrl"
-      @cancel="handleCancelUpdateYourProfileModal"
-      @submit="handleSubmitUpdateYourProfileModal"
-    />
-
 
   </CoreBase>
 
@@ -62,17 +51,7 @@
   import TopicsPage from './TopicsPage';
   import ContentPage from './ContentPage';
   import ContentUnavailablePage from './ContentUnavailablePage';
-  import Breadcrumbs from './Breadcrumbs';
-  import SearchPage from './SearchPage';
-  import ExamPage from './ExamPage';
-  import ExamReportViewer from './LearnExamReportViewer';
-  import AllClassesPage from './classes/AllClassesPage';
-  import ClassAssignmentsPage from './classes/ClassAssignmentsPage';
-  import LessonPlaylistPage from './classes/LessonPlaylistPage';
-  import LessonResourceViewer from './classes/LessonResourceViewer';
-  import ActionBarSearchBox from './ActionBarSearchBox';
   import { ASSESSMENT_FOOTER, QUIZ_FOOTER } from './footers.js';
-  import UpdateYourProfileModal from './UpdateYourProfileModal';
   import plugin_data from 'plugin_data';
 
   const pageNameToComponentMap = {
@@ -82,22 +61,12 @@
     [PageNames.TOPICS_TOPIC]: TopicsPage,
     [PageNames.TOPICS_CONTENT]: ContentPage,
     [PageNames.CONTENT_UNAVAILABLE]: ContentUnavailablePage,
-    [PageNames.SEARCH]: SearchPage,
-    [ClassesPageNames.EXAM_VIEWER]: ExamPage,
-    [ClassesPageNames.EXAM_REPORT_VIEWER]: ExamReportViewer,
-    [ClassesPageNames.ALL_CLASSES]: AllClassesPage,
-    [ClassesPageNames.CLASS_ASSIGNMENTS]: ClassAssignmentsPage,
-    [ClassesPageNames.LESSON_PLAYLIST]: LessonPlaylistPage,
-    [ClassesPageNames.LESSON_RESOURCE_VIEWER]: LessonResourceViewer,
   };
 
   export default {
     name: 'LearnIndex',
     components: {
-      ActionBarSearchBox,
-      Breadcrumbs,
       CoreBase,
-      UpdateYourProfileModal,
     },
     mixins: [commonCoreStrings, commonLearnStrings, responsiveWindowMixin],
     data() {
@@ -108,18 +77,10 @@
     },
     computed: {
       ...mapGetters(['isUserLoggedIn']),
-      ...mapState('lessonPlaylist/resource', {
-        lessonContent: 'content',
-        currentLesson: 'currentLesson',
-      }),
-      ...mapState('classAssignments', {
-        classroomName: state => state.currentClassroom.name,
-      }),
       ...mapState('topicsTree', {
         topicsTreeContent: 'content',
         topicsTreeChannel: 'channel',
       }),
-      ...mapState('examReportViewer', ['exam']),
       ...mapState(['pageName']),
       userIsAuthorized() {
         return (
@@ -283,28 +244,6 @@
           })
           .catch(() => {});
       },
-      handleCancelUpdateYourProfileModal() {
-        this.$store.dispatch('deferProfileUpdates', this.demographicInfo);
-        this.demographicInfo = null;
-      },
-      handleSubmitUpdateYourProfileModal() {
-        if (this.userPluginUrl) {
-          const url = `${this.userPluginUrl()}#/profile/edit`;
-          const redirect = () => {
-            window.location.href = url;
-          };
-          this.$store
-            .dispatch('deferProfileUpdates', this.demographicInfo)
-            .then(redirect, redirect);
-        }
-      },
-    },
-    $trs: {
-      examReportTitle: '{examTitle} report',
-      recommended: 'Recommended',
-      documentTitleForPopular: 'Popular',
-      documentTitleForResume: 'Resume',
-      documentTitleForNextSteps: 'Next Steps',
     },
   };
 

@@ -35,13 +35,6 @@
           :value="numCoachContents"
           :isTopic="isTopic"
         />
-        <KButton
-          v-if="copiesCount > 1"
-          appearance="basic-link"
-          class="copies"
-          :text="$tr('copies', { num: copiesCount })"
-          @click.prevent="$emit('openCopiesModal', contentId)"
-        />
       </div>
     </div>
   </router-link>
