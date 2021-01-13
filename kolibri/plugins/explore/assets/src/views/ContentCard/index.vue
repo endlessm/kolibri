@@ -90,9 +90,6 @@
       },
     },
     computed: {
-      isTopic() {
-        return this.kind === ContentNodeKinds.TOPIC || this.kind === ContentNodeKinds.CHANNEL;
-      },
       maxTitleHeight() {
         if (this.hasFooter && this.subtitle) {
           return 20;

@@ -79,9 +79,7 @@
       }),
       ...mapState(['pageName']),
       userIsAuthorized() {
-        return (
-          (this.$store.getters.allowAccess) || this.isUserLoggedIn
-        );
+        return this.$store.getters.allowAccess || this.isUserLoggedIn;
       },
       currentPage() {
         return pageNameToComponentMap[this.pageName] || null;

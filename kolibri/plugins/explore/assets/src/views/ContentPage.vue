@@ -102,7 +102,6 @@
     licenseLongName,
     licenseDescriptionForConsumer,
   } from 'kolibri.utils.licenseTranslations';
-  import { PageNames } from '../constants';
   import { updateContentNodeProgress } from '../modules/coreExplore/utils';
   import PageHeader from './PageHeader';
   import commonExploreStrings from './commonExploreStrings';
@@ -131,7 +130,6 @@
     },
     computed: {
       ...mapGetters(['isUserLoggedIn', 'facilityConfig', 'currentUserId']),
-      ...mapState(['pageName']),
       ...mapState('topicsTree', ['content', 'channel']),
       ...mapState('topicsTree', {
         contentId: state => state.content.content_id,
@@ -146,9 +144,6 @@
         extraFields: state => state.core.logging.summary.extra_fields,
         fullName: state => state.core.session.full_name,
       }),
-      isTopic() {
-        return this.content.kind === ContentNodeKinds.TOPIC;
-      },
       canDownload() {
         if (this.facilityConfig.show_download_button_in_learn && this.content) {
           return (
@@ -188,15 +183,6 @@
       },
       primaryFilename() {
         return `${this.primaryFile.checksum}.${this.primaryFile.extension}`;
-      },
-      nextContentLink() {
-        return {
-          name:
-            this.content.next_content.kind === ContentNodeKinds.TOPIC
-              ? PageNames.TOPICS_TOPIC
-              : PageNames.TOPICS_CONTENT,
-          params: { id: this.content.next_content.id },
-        };
       },
       licenseShortName() {
         return licenseShortName(this.content.license_name);
@@ -248,20 +234,8 @@
         );
         this.$emit('addProgress', progressPercent);
       },
-      updateExerciseProgress(progressPercent) {
-        this.$emit('updateProgress', progressPercent);
-      },
       updateContentState(contentState, forceSave = true) {
         this.updateContentNodeState({ contentState, forceSave });
-      },
-      markAsComplete() {
-        this.wasIncomplete = false;
-      },
-      genContentLink(id, kind) {
-        return {
-          name: kind === ContentNodeKinds.TOPIC ? PageNames.TOPICS_TOPIC : PageNames.TOPICS_CONTENT,
-          params: { id },
-        };
       },
       launchIntent() {
         return shareFile({
@@ -280,7 +254,6 @@
       toggleLicenseDescription: 'Toggle license description',
       copyrightHolder: 'Copyright holder: {copyrightHolder}',
       shareMessage: '"{title}" (in "{topic}"), from {copyrightHolder}',
-      nextResource: 'Next resource',
       documentTitle: '{ contentTitle } - { channelTitle }',
       shareFile: 'Share',
     },

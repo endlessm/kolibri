@@ -39,7 +39,7 @@
 
 <script>
 
-  import { validateLinkObject, validateContentNodeKind } from 'kolibri.utils.validators';
+  import { validateLinkObject } from 'kolibri.utils.validators';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
   import ProgressIcon from 'kolibri.coreVue.components.ProgressIcon';
@@ -63,11 +63,6 @@
       tagline: {
         type: String,
         required: false,
-      },
-      kind: {
-        type: String,
-        required: true,
-        validator: validateContentNodeKind,
       },
       progress: {
         type: Number,
