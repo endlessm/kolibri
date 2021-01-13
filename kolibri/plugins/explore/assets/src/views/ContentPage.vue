@@ -10,7 +10,6 @@
     />
     <template v-if="sessionReady">
       <KContentRenderer
-        v-if="!content.assessment"
         class="content-renderer"
         :kind="content.kind"
         :lang="content.lang"
@@ -85,13 +84,6 @@
     <slot name="below_content">
     </slot>
 
-    <MasteredSnackbars
-      v-if="progress >= 1 && wasIncomplete"
-      :nextContent="content.next_content"
-      :nextContentLink="nextContentLink"
-      @close="markAsComplete"
-    />
-
   </KPageContainer>
 
 </template>
@@ -113,7 +105,6 @@
   import { PageNames, PageModes } from '../constants';
   import { updateContentNodeProgress } from '../modules/coreExplore/utils';
   import PageHeader from './PageHeader';
-  import MasteredSnackbars from './MasteredSnackbars';
   import commonExploreStrings from './commonExploreStrings';
 
   export default {
@@ -129,7 +120,6 @@
     components: {
       PageHeader,
       DownloadButton,
-      MasteredSnackbars,
     },
     mixins: [commonExploreStrings],
     data() {
