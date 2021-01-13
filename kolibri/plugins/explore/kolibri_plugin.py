@@ -18,12 +18,12 @@ from kolibri.plugins import KolibriPluginBase
 from kolibri.plugins.hooks import register_hook
 
 
-class Learn(KolibriPluginBase):
+class Explore(KolibriPluginBase):
     translated_view_urls = "urls"
 
 
 @register_hook
-class LearnRedirect(RoleBasedRedirectHook):
+class ExploreRedirect(RoleBasedRedirectHook):
     @property
     def roles(self):
         if is_landing_page(LANDING_PAGE_LEARN):
@@ -33,16 +33,16 @@ class LearnRedirect(RoleBasedRedirectHook):
 
     @property
     def url(self):
-        return self.plugin_url(Learn, "learn")
+        return self.plugin_url(Explore, "explore")
 
 
 @register_hook
-class LearnNavItem(NavigationHook):
+class ExploreNavItem(NavigationHook):
     bundle_id = "side_nav"
 
 
 @register_hook
-class LearnAsset(webpack_hooks.WebpackBundleHook):
+class ExploreAsset(webpack_hooks.WebpackBundleHook):
     bundle_id = "app"
 
     @property
@@ -54,7 +54,7 @@ class LearnAsset(webpack_hooks.WebpackBundleHook):
 
 
 @register_hook
-class LearnContentNodeHook(ContentNodeDisplayHook):
+class ExploreContentNodeHook(ContentNodeDisplayHook):
     def node_url(self, node):
         kind_slug = None
         if not node.parent:
@@ -65,7 +65,7 @@ class LearnContentNodeHook(ContentNodeDisplayHook):
             kind_slug = "c/"
         if kind_slug is not None:
             return (
-                reverse("kolibri:kolibri.plugins.explore:learn")
+                reverse("kolibri:kolibri.plugins.explore:explore")
                 + "#/topics/"
                 + kind_slug
                 + node.id

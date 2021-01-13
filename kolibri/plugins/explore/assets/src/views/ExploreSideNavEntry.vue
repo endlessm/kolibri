@@ -25,7 +25,7 @@
     $trs: {},
     computed: {
       url() {
-        return urls['kolibri:kolibri.plugins.explore:learn']();
+        return urls['kolibri:kolibri.plugins.explore:explore']();
       },
     },
     priority: 5,
