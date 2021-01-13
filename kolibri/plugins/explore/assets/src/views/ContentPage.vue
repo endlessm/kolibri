@@ -33,29 +33,6 @@
         @addProgress="addProgress"
         @updateContentState="updateContentState"
       />
-
-      <AssessmentWrapper
-        v-else
-        :id="content.id"
-        class="content-renderer"
-        :kind="content.kind"
-        :files="content.files"
-        :lang="content.lang"
-        :randomize="content.randomize"
-        :masteryModel="content.masteryModel"
-        :assessmentIds="content.assessmentIds"
-        :channelId="channelId"
-        :available="content.available"
-        :extraFields="extraFields"
-        :progress="summaryProgress"
-        :userId="currentUserId"
-        :userFullName="fullName"
-        :timeSpent="summaryTimeSpent"
-        @startTracking="startTracking"
-        @stopTracking="stopTracking"
-        @updateProgress="updateExerciseProgress"
-        @updateContentState="updateContentState"
-      />
     </template>
     <KCircularLoader v-else />
 
@@ -141,11 +118,10 @@
     licenseDescriptionForConsumer,
   } from 'kolibri.utils.licenseTranslations';
   import { PageNames, PageModes } from '../constants';
-  import { updateContentNodeProgress } from '../modules/coreLearn/utils';
+  import { updateContentNodeProgress } from '../modules/coreExplore/utils';
   import PageHeader from './PageHeader';
-  import AssessmentWrapper from './AssessmentWrapper';
   import MasteredSnackbars from './MasteredSnackbars';
-  import commonLearnStrings from './commonLearnStrings';
+  import commonExploreStrings from './commonExploreStrings';
 
   export default {
     name: 'ContentPage',
@@ -161,10 +137,9 @@
       CoachContentLabel,
       PageHeader,
       DownloadButton,
-      AssessmentWrapper,
       MasteredSnackbars,
     },
-    mixins: [commonLearnStrings],
+    mixins: [commonExploreStrings],
     data() {
       return {
         wasIncomplete: false,

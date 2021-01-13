@@ -44,7 +44,7 @@
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
   import CoreBase from 'kolibri.coreVue.components.CoreBase';
   import { PageNames } from '../constants';
-  import commonLearnStrings from './commonLearnStrings';
+  import commonExploreStrings from './commonExploreStrings';
   import ChannelsPage from './ChannelsPage';
   import CustomChannelsPage from './CustomChannelsPage';
   import TopicsPage from './TopicsPage';
@@ -62,11 +62,11 @@
   };
 
   export default {
-    name: 'LearnIndex',
+    name: 'ExploreIndex',
     components: {
       CoreBase,
     },
-    mixins: [commonCoreStrings, commonLearnStrings, responsiveWindowMixin],
+    mixins: [commonCoreStrings, commonExploreStrings, responsiveWindowMixin],
     data() {
       return {
         lastRoute: null,

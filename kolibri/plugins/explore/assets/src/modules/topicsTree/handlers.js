@@ -8,7 +8,7 @@ import ConditionalPromise from 'kolibri.lib.conditionalPromise';
 import router from 'kolibri.coreVue.router';
 import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
 import { PageNames, CUSTOM_PRESENTATION_TITLE } from '../../constants';
-import { _collectionState, normalizeContentNode, contentState } from '../coreLearn/utils';
+import { _collectionState, normalizeContentNode, contentState } from '../coreExplore/utils';
 
 export function showTopicsChannel(store, id) {
   return store.dispatch('loading').then(() => {

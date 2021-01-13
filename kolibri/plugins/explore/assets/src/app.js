@@ -1,7 +1,7 @@
 import router from 'kolibri.coreVue.router';
-import RootVue from './views/LearnIndex';
+import RootVue from './views/ExploreIndex';
 import routes from './routes';
-import { setFacilitiesAndConfig } from './modules/coreLearn/actions';
+import { setFacilitiesAndConfig } from './modules/coreExplore/actions';
 import pluginModule from './modules/pluginModule';
 import { PageNames } from './constants';
 import KolibriApp from 'kolibri_app';
