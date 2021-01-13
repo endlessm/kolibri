@@ -39,7 +39,6 @@
 <script>
 
   import { mapGetters, mapState } from 'vuex';
-  import urls from 'kolibri.urls';
   import lastItem from 'lodash/last';
   import commonCoreStrings from 'kolibri.coreVue.mixins.commonCoreStrings';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
@@ -51,7 +50,6 @@
   import TopicsPage from './TopicsPage';
   import ContentPage from './ContentPage';
   import ContentUnavailablePage from './ContentUnavailablePage';
-  import { ASSESSMENT_FOOTER, QUIZ_FOOTER } from './footers.js';
   import plugin_data from 'plugin_data';
 
   const pageNameToComponentMap = {
@@ -72,7 +70,6 @@
     data() {
       return {
         lastRoute: null,
-        demographicInfo: null,
       };
     },
     computed: {
@@ -142,21 +139,7 @@
         if (this.pageName === PageNames.TOPICS_CONTENT) {
           let immersivePageRoute = {};
           let appBarTitle;
-          const { searchTerm, last } = this.$route.query;
-          if (searchTerm) {
-            appBarTitle = this.coreString('searchLabel');
-            immersivePageRoute = this.$router.getRoute(PageNames.SEARCH, {}, this.$route.query);
-          } else if (last) {
-            // 'last' should only be route names for Recommended Page and its subpages
-            immersivePageRoute = this.$router.getRoute(last);
-            const trString = {
-              [PageNames.RECOMMENDED_POPULAR]: 'documentTitleForPopular',
-              [PageNames.RECOMMENDED_RESUME]: 'documentTitleForResume',
-              [PageNames.RECOMMENDED_NEXT_STEPS]: 'documentTitleForNextSteps',
-              [PageNames.RECOMMENDED]: 'recommended',
-            }[last];
-            appBarTitle = this.$tr(trString);
-          } else if (this.topicsTreeContent.parent) {
+          if (this.topicsTreeContent.parent) {
             // Need to guard for parent being non-empty to avoid console errors
             immersivePageRoute = this.$router.getRoute(PageNames.TOPICS_TOPIC, {
               id: this.topicsTreeContent.parent,
@@ -186,30 +169,7 @@
         };
       },
       bottomSpaceReserved() {
-        if (this.pageName === ClassesPageNames.EXAM_VIEWER) {
-          return QUIZ_FOOTER;
-        }
-        let content;
-        if (
-          this.pageName === PageNames.TOPICS_CONTENT ||
-          this.pageName === PageNames.RECOMMENDED_CONTENT
-        ) {
-          content = this.topicsTreeContent;
-        } else if (this.pageName === ClassesPageNames.LESSON_RESOURCE_VIEWER) {
-          content = this.lessonContent;
-        }
-        const isAssessment = content && content.assessment;
-        // height of .attempts-container in AssessmentWrapper
-        return isAssessment ? ASSESSMENT_FOOTER : 0;
-      },
-      profileNeedsUpdate() {
-        return (
-          this.demographicInfo &&
-          (this.demographicInfo.gender === '' || this.demographicInfo.birth_year === '')
-        );
-      },
-      userPluginUrl() {
-        return urls['kolibri:kolibri.plugins.user:user'];
+        return 0;
       },
     },
     watch: {
@@ -228,21 +188,6 @@
           query: oldRoute.query,
           params: oldRoute.params,
         };
-      },
-    },
-    mounted() {
-      if (this.isUserLoggedIn) {
-        this.getDemographicInfo();
-      }
-    },
-    methods: {
-      getDemographicInfo() {
-        return this.$store
-          .dispatch('getDemographicInfo')
-          .then(info => {
-            this.demographicInfo = { ...info };
-          })
-          .catch(() => {});
       },
     },
   };

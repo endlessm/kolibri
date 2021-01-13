@@ -112,21 +112,6 @@
     </div>
 
     <slot name="below_content">
-      <template v-if="content.next_content">
-        <h2>{{ $tr('nextResource') }}</h2>
-        <ContentCardGroupCarousel
-          :genContentLink="genContentLink"
-          :contents="[content.next_content]"
-        />
-      </template>
-      <template v-if="showRecommended">
-        <h2>{{ learnString('recommendedLabel') }}</h2>
-        <ContentCardGroupCarousel
-          :genContentLink="genContentLink"
-          :header="recommendedText"
-          :contents="recommended"
-        />
-      </template>
     </slot>
 
     <MasteredSnackbars
@@ -158,7 +143,6 @@
   import { PageNames, PageModes, ClassesPageNames } from '../constants';
   import { updateContentNodeProgress } from '../modules/coreLearn/utils';
   import PageHeader from './PageHeader';
-  import ContentCardGroupCarousel from './ContentCardGroupCarousel';
   import AssessmentWrapper from './AssessmentWrapper';
   import MasteredSnackbars from './MasteredSnackbars';
   import commonLearnStrings from './commonLearnStrings';
@@ -180,7 +164,6 @@
     components: {
       CoachContentLabel,
       PageHeader,
-      ContentCardGroupCarousel,
       DownloadButton,
       AssessmentWrapper,
       MasteredSnackbars,
@@ -234,9 +217,6 @@
         }
         return '';
       },
-      recommendedText() {
-        return this.learnString('recommendedLabel');
-      },
       progress() {
         if (this.isUserLoggedIn) {
           // if there no attempts for this exercise, there is no progress
@@ -246,11 +226,6 @@
           return this.summaryProgress;
         }
         return this.sessionProgress;
-      },
-      showRecommended() {
-        return (
-          this.recommended && this.recommended.length && this.pageMode === PageModes.RECOMMENDED
-        );
       },
       downloadableFiles() {
         return this.content.files.filter(file => !file.preset.endsWith('thumbnail'));
