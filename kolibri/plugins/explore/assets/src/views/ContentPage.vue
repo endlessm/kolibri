@@ -140,7 +140,7 @@
     licenseLongName,
     licenseDescriptionForConsumer,
   } from 'kolibri.utils.licenseTranslations';
-  import { PageNames, PageModes, ClassesPageNames } from '../constants';
+  import { PageNames, PageModes } from '../constants';
   import { updateContentNodeProgress } from '../modules/coreLearn/utils';
   import PageHeader from './PageHeader';
   import AssessmentWrapper from './AssessmentWrapper';
@@ -150,10 +150,6 @@
   export default {
     name: 'ContentPage',
     metaInfo() {
-      // Do not overwrite metaInfo of LessonResourceViewer
-      if (this.pageName === ClassesPageNames.LESSON_RESOURCE_VIEWER) {
-        return {};
-      }
       return {
         title: this.$tr('documentTitle', {
           contentTitle: this.content.title,

@@ -43,7 +43,7 @@
   import commonCoreStrings from 'kolibri.coreVue.mixins.commonCoreStrings';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
   import CoreBase from 'kolibri.coreVue.components.CoreBase';
-  import { PageNames, ClassesPageNames } from '../constants';
+  import { PageNames } from '../constants';
   import commonLearnStrings from './commonLearnStrings';
   import ChannelsPage from './ChannelsPage';
   import CustomChannelsPage from './CustomChannelsPage';
@@ -94,48 +94,6 @@
         ].includes(this.currentPage);
       },
       immersivePageProps() {
-        if (this.pageName === ClassesPageNames.EXAM_VIEWER) {
-          return {
-            appBarTitle: this.classroomName || '',
-            immersivePage: true,
-            immersivePageRoute: this.$router.getRoute(ClassesPageNames.CLASS_ASSIGNMENTS),
-            immersivePagePrimary: true,
-            immersivePageIcon: 'close',
-          };
-        }
-        if (this.pageName === ClassesPageNames.LESSON_RESOURCE_VIEWER) {
-          return {
-            appBarTitle: this.currentLesson.title || '',
-            immersivePage: true,
-            immersivePageRoute: this.$router.getRoute(ClassesPageNames.LESSON_PLAYLIST),
-            immersivePagePrimary: true,
-            immersivePageIcon: 'close',
-          };
-        }
-        if (this.pageName === ClassesPageNames.EXAM_REPORT_VIEWER) {
-          if (this.exam) {
-            return {
-              appBarTitle: this.$tr('examReportTitle', {
-                examTitle: this.exam.title,
-              }),
-              immersivePage: true,
-              immersivePageRoute: this.$router.getRoute(ClassesPageNames.CLASS_ASSIGNMENTS),
-              immersivePagePrimary: false,
-              immersivePageIcon: 'close',
-            };
-          }
-        }
-        if (this.pageName === PageNames.SEARCH) {
-          return {
-            appBarTitle: this.coreString('searchLabel'),
-            immersivePage: true,
-            // Default to the Learn root page if there is no lastRoute to return to.
-            immersivePageRoute: this.lastRoute || this.$router.getRoute(PageNames.TOPICS_ROOT),
-            immersivePagePrimary: true,
-            immersivePageIcon: 'close',
-          };
-        }
-
         if (this.pageName === PageNames.TOPICS_CONTENT) {
           let immersivePageRoute = {};
           let appBarTitle;
