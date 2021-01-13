@@ -1,7 +1,7 @@
 <template>
 
   <CoreMenuOption
-    :label="learnString('exploreLabel')"
+    :label="exploreString('exploreLabel')"
     :link="url"
     icon="search"
   />
