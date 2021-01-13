@@ -8,11 +8,6 @@
       dir="auto"
       :contentType="content.kind"
     />
-    <CoachContentLabel
-      class="coach-content-label"
-      :value="content.coach_content ? 1 : 0"
-      :isTopic="isTopic"
-    />
     <template v-if="sessionReady">
       <KContentRenderer
         v-if="!content.assessment"
@@ -36,7 +31,6 @@
     </template>
     <KCircularLoader v-else />
 
-    <!-- TODO consolidate this metadata table with coach/lessons -->
     <!-- eslint-disable-next-line vue/no-v-html -->
     <p dir="auto" v-html="description"></p>
 
@@ -107,7 +101,6 @@
 
   import { mapState, mapGetters, mapActions } from 'vuex';
   import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
-  import CoachContentLabel from 'kolibri.coreVue.components.CoachContentLabel';
   import DownloadButton from 'kolibri.coreVue.components.DownloadButton';
   import { isEmbeddedWebView } from 'kolibri.utils.browserInfo';
   import { shareFile } from 'kolibri.utils.appCapabilities';
@@ -134,7 +127,6 @@
       };
     },
     components: {
-      CoachContentLabel,
       PageHeader,
       DownloadButton,
       MasteredSnackbars,
@@ -312,10 +304,6 @@
   .content-renderer {
     // Needs to be one less than the ScrollingHeader's z-index of 4
     z-index: 3;
-  }
-
-  .coach-content-label {
-    margin: 8px 0;
   }
 
   .metadata {

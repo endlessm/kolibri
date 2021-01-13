@@ -29,12 +29,6 @@
         {{ subtitle }}
       </p>
       <div class="footer">
-        <CoachContentLabel
-          v-if="isUserLoggedIn && !isLearner"
-          class="coach-content-label"
-          :value="numCoachContents"
-          :isTopic="isTopic"
-        />
       </div>
     </div>
   </router-link>
@@ -47,7 +41,6 @@
   import { mapGetters } from 'vuex';
   import { validateLinkObject, validateContentNodeKind } from 'kolibri.utils.validators';
   import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
-  import CoachContentLabel from 'kolibri.coreVue.components.CoachContentLabel';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
   import CardThumbnail from './CardThumbnail';
 
@@ -55,7 +48,6 @@
     name: 'ContentCard',
     components: {
       CardThumbnail,
-      CoachContentLabel,
       TextTruncator,
     },
     props: {
@@ -80,13 +72,6 @@
         type: Boolean,
         default: true,
       },
-      // ContentNode.coach_content will be `0` if not a coach content leaf node,
-      // or a topic without coach content. It will be a positive integer if a topic
-      // with coach content, and `1` if a coach content leaf node.
-      numCoachContents: {
-        type: Number,
-        default: 0,
-      },
       progress: {
         type: Number,
         required: false,
@@ -108,10 +93,6 @@
         type: String,
         required: false,
       },
-      copiesCount: {
-        type: Number,
-        required: false,
-      },
     },
     computed: {
       ...mapGetters(['isLearner', 'isUserLoggedIn']),
@@ -127,11 +108,8 @@
         return 60;
       },
       hasFooter() {
-        return this.numCoachContents > 0 || this.copiesCount > 1;
+        return false;
       },
-    },
-    $trs: {
-      copies: '{ num, number} locations',
     },
   };
 
@@ -144,10 +122,6 @@
   @import './card';
 
   $margin: 16px;
-
-  .coach-content-label {
-    display: inline-block;
-  }
 
   .card {
     @extend %dropshadow-1dp;
@@ -200,11 +174,6 @@
   .subtitle.no-footer {
     top: unset;
     bottom: $margin;
-  }
-
-  .copies {
-    display: inline-block;
-    float: right;
   }
 
   .mobile-card.card {

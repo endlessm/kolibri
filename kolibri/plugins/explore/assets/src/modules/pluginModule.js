@@ -8,9 +8,6 @@ export default {
   state() {
     return {
       pageName: '',
-      examAttemptLogs: {},
-      examLog: {},
-      memberships: [],
     };
   },
   actions,
