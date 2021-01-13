@@ -1,4 +1,3 @@
-import { MembershipResource } from 'kolibri.resources';
 import router from 'kolibri.coreVue.router';
 import { PageNames, pageNameToModuleMap } from '../../constants';
 

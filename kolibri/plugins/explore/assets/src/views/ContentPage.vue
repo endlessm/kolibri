@@ -102,7 +102,7 @@
     licenseLongName,
     licenseDescriptionForConsumer,
   } from 'kolibri.utils.licenseTranslations';
-  import { PageNames, PageModes } from '../constants';
+  import { PageNames } from '../constants';
   import { updateContentNodeProgress } from '../modules/coreExplore/utils';
   import PageHeader from './PageHeader';
   import commonExploreStrings from './commonExploreStrings';
@@ -130,9 +130,9 @@
       };
     },
     computed: {
-      ...mapGetters(['isUserLoggedIn', 'facilityConfig', 'pageMode', 'currentUserId']),
+      ...mapGetters(['isUserLoggedIn', 'facilityConfig', 'currentUserId']),
       ...mapState(['pageName']),
-      ...mapState('topicsTree', ['content', 'channel', 'recommended']),
+      ...mapState('topicsTree', ['content', 'channel']),
       ...mapState('topicsTree', {
         contentId: state => state.content.content_id,
         contentNodeId: state => state.content.id,

@@ -38,7 +38,6 @@
 
 <script>
 
-  import { mapGetters } from 'vuex';
   import { validateLinkObject, validateContentNodeKind } from 'kolibri.utils.validators';
   import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
@@ -89,13 +88,8 @@
         type: Boolean,
         default: false,
       },
-      contentId: {
-        type: String,
-        required: false,
-      },
     },
     computed: {
-      ...mapGetters(['isLearner', 'isUserLoggedIn']),
       isTopic() {
         return this.kind === ContentNodeKinds.TOPIC || this.kind === ContentNodeKinds.CHANNEL;
       },

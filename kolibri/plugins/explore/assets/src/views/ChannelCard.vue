@@ -39,10 +39,8 @@
 
 <script>
 
-  import { mapGetters } from 'vuex';
   import { validateLinkObject, validateContentNodeKind } from 'kolibri.utils.validators';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
-  import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
   import ProgressIcon from 'kolibri.coreVue.components.ProgressIcon';
 
@@ -86,10 +84,6 @@
       },
     },
     computed: {
-      ...mapGetters(['isLearner', 'isUserLoggedIn']),
-      isTopic() {
-        return this.kind === ContentNodeKinds.TOPIC || this.kind === ContentNodeKinds.CHANNEL;
-      },
       overallHeight() {
         return 300;
       },
