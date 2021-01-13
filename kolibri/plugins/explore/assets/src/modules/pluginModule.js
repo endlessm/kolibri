@@ -4,8 +4,6 @@ import * as actions from './coreExplore/actions';
 import topicsRoot from './topicsRoot';
 import topicsTree from './topicsTree';
 
-import plugin_data from 'plugin_data';
-
 export default {
   state() {
     return {
@@ -13,8 +11,6 @@ export default {
       examAttemptLogs: {},
       examLog: {},
       memberships: [],
-      canAccessUnassignedContentSetting: plugin_data.allowLearnerUnassignedResourceAccess,
-      allowGuestAccess: plugin_data.allowGuestAccess,
     };
   },
   actions,
