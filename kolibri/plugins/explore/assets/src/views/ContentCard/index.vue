@@ -39,7 +39,6 @@
 <script>
 
   import { validateLinkObject, validateContentNodeKind } from 'kolibri.utils.validators';
-  import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
   import CardThumbnail from './CardThumbnail';
 
