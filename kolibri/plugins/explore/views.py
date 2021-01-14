@@ -9,5 +9,5 @@ from kolibri.core.decorators import cache_no_user_data
 
 
 @method_decorator(cache_no_user_data, name="dispatch")
-class LearnView(TemplateView):
-    template_name = "explore/learn.html"
+class ExploreView(TemplateView):
+    template_name = "explore/explore.html"

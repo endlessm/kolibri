@@ -10,17 +10,8 @@
       :thumbnail="content.thumbnail"
       :kind="content.kind"
       :progress="content.progress || 0"
-      :numCoachContents="content.num_coach_contents"
       :link="genContentLink(content.id, content.kind)"
       :contentId="content.content_id"
-      :copiesCount="content.copies_count"
-      @openCopiesModal="openCopiesModal"
-    />
-    <CopiesModal
-      v-if="modalIsOpen"
-      :uniqueId="uniqueId"
-      :sharedContentId="sharedContentId"
-      @submit="modalIsOpen = false"
     />
   </div>
 
@@ -32,13 +23,11 @@
   import { validateLinkObject } from 'kolibri.utils.validators';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
   import ContentCard from './ContentCard';
-  import CopiesModal from './CopiesModal';
 
   export default {
     name: 'ContentCardGroupGrid',
     components: {
       ContentCard,
-      CopiesModal,
     },
     mixins: [responsiveWindowMixin],
     props: {
@@ -56,17 +45,9 @@
       },
     },
     data: () => ({
-      modalIsOpen: false,
       sharedContentId: null,
       uniqueId: null,
     }),
-    methods: {
-      openCopiesModal(contentId) {
-        this.sharedContentId = contentId;
-        this.uniqueId = this.contents.find(content => content.content_id === contentId).id;
-        this.modalIsOpen = true;
-      },
-    },
   };
 
 </script>

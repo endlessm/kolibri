@@ -7,8 +7,6 @@ from django.urls import reverse
 from kolibri.core.auth.constants.user_kinds import ANONYMOUS
 from kolibri.core.auth.constants.user_kinds import LEARNER
 from kolibri.core.content.hooks import ContentNodeDisplayHook
-from kolibri.core.device.utils import allow_learner_unassigned_resource_access
-from kolibri.core.device.utils import get_device_setting
 from kolibri.core.device.utils import is_landing_page
 from kolibri.core.device.utils import LANDING_PAGE_LEARN
 from kolibri.core.hooks import NavigationHook
@@ -18,13 +16,12 @@ from kolibri.plugins import KolibriPluginBase
 from kolibri.plugins.hooks import register_hook
 
 
-class Learn(KolibriPluginBase):
-    untranslated_view_urls = "api_urls"
+class Explore(KolibriPluginBase):
     translated_view_urls = "urls"
 
 
 @register_hook
-class LearnRedirect(RoleBasedRedirectHook):
+class ExploreRedirect(RoleBasedRedirectHook):
     @property
     def roles(self):
         if is_landing_page(LANDING_PAGE_LEARN):
@@ -34,28 +31,25 @@ class LearnRedirect(RoleBasedRedirectHook):
 
     @property
     def url(self):
-        return self.plugin_url(Learn, "learn")
+        return self.plugin_url(Explore, "explore")
 
 
 @register_hook
-class LearnNavItem(NavigationHook):
+class ExploreNavItem(NavigationHook):
     bundle_id = "side_nav"
 
 
 @register_hook
-class LearnAsset(webpack_hooks.WebpackBundleHook):
+class ExploreAsset(webpack_hooks.WebpackBundleHook):
     bundle_id = "app"
 
     @property
     def plugin_data(self):
-        return {
-            "allowGuestAccess": get_device_setting("allow_guest_access"),
-            "allowLearnerUnassignedResourceAccess": allow_learner_unassigned_resource_access(),
-        }
+        return {}
 
 
 @register_hook
-class LearnContentNodeHook(ContentNodeDisplayHook):
+class ExploreContentNodeHook(ContentNodeDisplayHook):
     def node_url(self, node):
         kind_slug = None
         if not node.parent:
@@ -66,7 +60,7 @@ class LearnContentNodeHook(ContentNodeDisplayHook):
             kind_slug = "c/"
         if kind_slug is not None:
             return (
-                reverse("kolibri:kolibri.plugins.explore:learn")
+                reverse("kolibri:kolibri.plugins.explore:explore")
                 + "#/topics/"
                 + kind_slug
                 + node.id

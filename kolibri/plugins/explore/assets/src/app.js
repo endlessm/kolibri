@@ -1,14 +1,13 @@
 import router from 'kolibri.coreVue.router';
-import RootVue from './views/LearnIndex';
+import RootVue from './views/ExploreIndex';
 import routes from './routes';
-import { setFacilitiesAndConfig, prepareLearnApp } from './modules/coreLearn/actions';
+import { setFacilitiesAndConfig } from './modules/coreExplore/actions';
 import pluginModule from './modules/pluginModule';
-import { PageNames } from './constants';
 import KolibriApp from 'kolibri_app';
 
-class LearnModule extends KolibriApp {
+class ExploreModule extends KolibriApp {
   get stateSetters() {
-    return [prepareLearnApp, setFacilitiesAndConfig];
+    return [setFacilitiesAndConfig];
   }
   get routes() {
     return routes;
@@ -20,20 +19,6 @@ class LearnModule extends KolibriApp {
     return pluginModule;
   }
   ready() {
-    // If we are not logged in and are forbidden from accessing as guest
-    // redirect to CONTENT_UNAVAILABLE.
-    router.beforeEach((to, from, next) => {
-      if (
-        to.name !== PageNames.CONTENT_UNAVAILABLE &&
-        !this.store.state.allowGuestAccess &&
-        !this.store.getters.isUserLoggedIn
-      ) {
-        router.replace({ name: PageNames.CONTENT_UNAVAILABLE });
-      } else {
-        next();
-      }
-    });
-
     // after every navigation, block double-clicks
     router.afterEach((toRoute, fromRoute) => {
       this.store.dispatch('blockDoubleClicks');
@@ -43,4 +28,4 @@ class LearnModule extends KolibriApp {
   }
 }
 
-export default new LearnModule();
+export default new ExploreModule();

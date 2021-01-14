@@ -1,5 +1,5 @@
 from django.conf.urls import url
 
-from .views import LearnView
+from .views import ExploreView
 
-urlpatterns = [url(r"^$", LearnView.as_view(), name="learn")]
+urlpatterns = [url(r"^$", ExploreView.as_view(), name="explore")]

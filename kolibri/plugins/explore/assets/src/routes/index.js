@@ -1,48 +1,20 @@
 import store from 'kolibri.coreVue.vuex.store';
 import router from 'kolibri.coreVue.router';
-import { showSearch } from '../modules/search/handlers';
 import {
   showTopicsTopic,
   showTopicsChannel,
   showTopicsContent,
 } from '../modules/topicsTree/handlers';
-import {
-  showRecommended,
-  showPopularPage,
-  showNextStepsPage,
-  showResumePage,
-} from '../modules/recommended/handlers';
 import { showFilteredChannels } from '../modules/topicsRoot/handlers';
-import { PageNames, ClassesPageNames } from '../constants';
-import RecommendedPage from '../views/RecommendedPage';
-import RecommendedSubpage from '../views/RecommendedSubpage';
-import classesRoutes from './classesRoutes';
-
-function unassignedContentGuard() {
-  const { canAccessUnassignedContent } = store.getters;
-  if (!canAccessUnassignedContent) {
-    // If there are no memberships and it is allowed, redirect to topics page
-    return router.replace({ name: ClassesPageNames.ALL_CLASSES });
-  }
-  // Otherwise return nothing
-  return;
-}
+import { PageNames } from '../constants';
 
 export default [
-  ...classesRoutes,
   {
     name: PageNames.ROOT,
     path: '/',
     handler: () => {
-      const { memberships } = store.state;
-      const { canAccessUnassignedContent } = store.getters;
-
-      // If a registered user, go to Classes Page, else go to Content
       return router.replace({
-        name:
-          memberships.length > 0 || !canAccessUnassignedContent
-            ? ClassesPageNames.ALL_CLASSES
-            : PageNames.TOPICS_ROOT,
+        name: PageNames.TOPICS_ROOT,
       });
     },
   },
@@ -50,31 +22,7 @@ export default [
     name: PageNames.TOPICS_ROOT,
     path: '/topics',
     handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
       showFilteredChannels(store);
-    },
-  },
-  {
-    name: PageNames.RECOMMENDED,
-    path: '/recommended',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showRecommended(store);
-    },
-    component: RecommendedPage,
-  },
-  {
-    name: PageNames.SEARCH,
-    path: '/search',
-    handler: toRoute => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showSearch(store, { ...toRoute.query });
     },
   },
   {
@@ -90,9 +38,6 @@ export default [
     name: PageNames.TOPICS_CHANNEL,
     path: '/topics/:channel_id',
     handler: toRoute => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
       showTopicsChannel(store, toRoute.params.channel_id);
     },
   },
@@ -100,9 +45,6 @@ export default [
     name: PageNames.TOPICS_TOPIC,
     path: '/topics/t/:id',
     handler: toRoute => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
       showTopicsTopic(store, { id: toRoute.params.id });
     },
   },
@@ -110,44 +52,8 @@ export default [
     name: PageNames.TOPICS_CONTENT,
     path: '/topics/c/:id',
     handler: toRoute => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
       showTopicsContent(store, toRoute.params.id);
     },
-  },
-  {
-    name: PageNames.RECOMMENDED_POPULAR,
-    path: '/recommended/popular',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showPopularPage(store);
-    },
-    component: RecommendedSubpage,
-  },
-  {
-    name: PageNames.RECOMMENDED_RESUME,
-    path: '/recommended/resume',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showResumePage(store);
-    },
-    component: RecommendedSubpage,
-  },
-  {
-    name: PageNames.RECOMMENDED_NEXT_STEPS,
-    path: '/recommended/nextsteps',
-    handler: () => {
-      if (unassignedContentGuard()) {
-        return unassignedContentGuard();
-      }
-      showNextStepsPage(store);
-    },
-    component: RecommendedSubpage,
   },
   {
     path: '*',

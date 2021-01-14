@@ -13,11 +13,8 @@
           :kind="content.kind"
           :tagline="getTagLine(content)"
           :progress="content.progress || 0"
-          :numCoachContents="content.num_coach_contents"
           :link="genContentLink(content.id, content.kind)"
           :contentId="content.content_id"
-          :copiesCount="content.copies_count"
-          @openCopiesModal="openCopiesModal"
         />
       </div>
 
@@ -89,11 +86,6 @@
     },
 
     methods: {
-      openCopiesModal(contentId) {
-        this.sharedContentId = contentId;
-        this.uniqueId = this.contents.find(content => content.content_id === contentId).id;
-        this.modalIsOpen = true;
-      },
       getTagLine(content) {
         return content.tagline || content.description;
       },

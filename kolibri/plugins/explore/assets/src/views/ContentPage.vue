@@ -8,14 +8,8 @@
       dir="auto"
       :contentType="content.kind"
     />
-    <CoachContentLabel
-      class="coach-content-label"
-      :value="content.coach_content ? 1 : 0"
-      :isTopic="isTopic"
-    />
     <template v-if="sessionReady">
       <KContentRenderer
-        v-if="!content.assessment"
         class="content-renderer"
         :kind="content.kind"
         :lang="content.lang"
@@ -33,33 +27,9 @@
         @addProgress="addProgress"
         @updateContentState="updateContentState"
       />
-
-      <AssessmentWrapper
-        v-else
-        :id="content.id"
-        class="content-renderer"
-        :kind="content.kind"
-        :files="content.files"
-        :lang="content.lang"
-        :randomize="content.randomize"
-        :masteryModel="content.masteryModel"
-        :assessmentIds="content.assessmentIds"
-        :channelId="channelId"
-        :available="content.available"
-        :extraFields="extraFields"
-        :progress="summaryProgress"
-        :userId="currentUserId"
-        :userFullName="fullName"
-        :timeSpent="summaryTimeSpent"
-        @startTracking="startTracking"
-        @stopTracking="stopTracking"
-        @updateProgress="updateExerciseProgress"
-        @updateContentState="updateContentState"
-      />
     </template>
     <KCircularLoader v-else />
 
-    <!-- TODO consolidate this metadata table with coach/lessons -->
     <!-- eslint-disable-next-line vue/no-v-html -->
     <p dir="auto" v-html="description"></p>
 
@@ -112,29 +82,7 @@
     </div>
 
     <slot name="below_content">
-      <template v-if="content.next_content">
-        <h2>{{ $tr('nextResource') }}</h2>
-        <ContentCardGroupCarousel
-          :genContentLink="genContentLink"
-          :contents="[content.next_content]"
-        />
-      </template>
-      <template v-if="showRecommended">
-        <h2>{{ learnString('recommendedLabel') }}</h2>
-        <ContentCardGroupCarousel
-          :genContentLink="genContentLink"
-          :header="recommendedText"
-          :contents="recommended"
-        />
-      </template>
     </slot>
-
-    <MasteredSnackbars
-      v-if="progress >= 1 && wasIncomplete"
-      :nextContent="content.next_content"
-      :nextContentLink="nextContentLink"
-      @close="markAsComplete"
-    />
 
   </KPageContainer>
 
@@ -145,7 +93,6 @@
 
   import { mapState, mapGetters, mapActions } from 'vuex';
   import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
-  import CoachContentLabel from 'kolibri.coreVue.components.CoachContentLabel';
   import DownloadButton from 'kolibri.coreVue.components.DownloadButton';
   import { isEmbeddedWebView } from 'kolibri.utils.browserInfo';
   import { shareFile } from 'kolibri.utils.appCapabilities';
@@ -155,22 +102,13 @@
     licenseLongName,
     licenseDescriptionForConsumer,
   } from 'kolibri.utils.licenseTranslations';
-  import { PageNames, PageModes, ClassesPageNames } from '../constants';
-  import { updateContentNodeProgress } from '../modules/coreLearn/utils';
+  import { updateContentNodeProgress } from '../modules/coreExplore/utils';
   import PageHeader from './PageHeader';
-  import ContentCardGroupCarousel from './ContentCardGroupCarousel';
-  import AssessmentWrapper from './AssessmentWrapper';
-  import MasteredSnackbars from './MasteredSnackbars';
-  import { lessonResourceViewerLink } from './classes/classPageLinks';
-  import commonLearnStrings from './commonLearnStrings';
+  import commonExploreStrings from './commonExploreStrings';
 
   export default {
     name: 'ContentPage',
     metaInfo() {
-      // Do not overwrite metaInfo of LessonResourceViewer
-      if (this.pageName === ClassesPageNames.LESSON_RESOURCE_VIEWER) {
-        return {};
-      }
       return {
         title: this.$tr('documentTitle', {
           contentTitle: this.content.title,
@@ -179,14 +117,10 @@
       };
     },
     components: {
-      CoachContentLabel,
       PageHeader,
-      ContentCardGroupCarousel,
       DownloadButton,
-      AssessmentWrapper,
-      MasteredSnackbars,
     },
-    mixins: [commonLearnStrings],
+    mixins: [commonExploreStrings],
     data() {
       return {
         wasIncomplete: false,
@@ -195,9 +129,8 @@
       };
     },
     computed: {
-      ...mapGetters(['isUserLoggedIn', 'facilityConfig', 'pageMode', 'currentUserId']),
-      ...mapState(['pageName']),
-      ...mapState('topicsTree', ['content', 'channel', 'recommended']),
+      ...mapGetters(['isUserLoggedIn', 'facilityConfig', 'currentUserId']),
+      ...mapState('topicsTree', ['content', 'channel']),
       ...mapState('topicsTree', {
         contentId: state => state.content.content_id,
         contentNodeId: state => state.content.id,
@@ -211,9 +144,6 @@
         extraFields: state => state.core.logging.summary.extra_fields,
         fullName: state => state.core.session.full_name,
       }),
-      isTopic() {
-        return this.content.kind === ContentNodeKinds.TOPIC;
-      },
       canDownload() {
         if (this.facilityConfig.show_download_button_in_learn && this.content) {
           return (
@@ -235,9 +165,6 @@
         }
         return '';
       },
-      recommendedText() {
-        return this.learnString('recommendedLabel');
-      },
       progress() {
         if (this.isUserLoggedIn) {
           // if there no attempts for this exercise, there is no progress
@@ -248,11 +175,6 @@
         }
         return this.sessionProgress;
       },
-      showRecommended() {
-        return (
-          this.recommended && this.recommended.length && this.pageMode === PageModes.RECOMMENDED
-        );
-      },
       downloadableFiles() {
         return this.content.files.filter(file => !file.preset.endsWith('thumbnail'));
       },
@@ -261,19 +183,6 @@
       },
       primaryFilename() {
         return `${this.primaryFile.checksum}.${this.primaryFile.extension}`;
-      },
-      nextContentLink() {
-        // HACK Use a the Resource Viewer Link instead
-        if (this.pageName === ClassesPageNames.LESSON_RESOURCE_VIEWER) {
-          return lessonResourceViewerLink(Number(this.$route.params.resourceNumber) + 1);
-        }
-        return {
-          name:
-            this.content.next_content.kind === ContentNodeKinds.TOPIC
-              ? PageNames.TOPICS_TOPIC
-              : PageNames.TOPICS_CONTENT,
-          params: { id: this.content.next_content.id },
-        };
       },
       licenseShortName() {
         return licenseShortName(this.content.license_name);
@@ -325,20 +234,8 @@
         );
         this.$emit('addProgress', progressPercent);
       },
-      updateExerciseProgress(progressPercent) {
-        this.$emit('updateProgress', progressPercent);
-      },
       updateContentState(contentState, forceSave = true) {
         this.updateContentNodeState({ contentState, forceSave });
-      },
-      markAsComplete() {
-        this.wasIncomplete = false;
-      },
-      genContentLink(id, kind) {
-        return {
-          name: kind === ContentNodeKinds.TOPIC ? PageNames.TOPICS_TOPIC : PageNames.TOPICS_CONTENT,
-          params: { id },
-        };
       },
       launchIntent() {
         return shareFile({
@@ -357,7 +254,6 @@
       toggleLicenseDescription: 'Toggle license description',
       copyrightHolder: 'Copyright holder: {copyrightHolder}',
       shareMessage: '"{title}" (in "{topic}"), from {copyrightHolder}',
-      nextResource: 'Next resource',
       documentTitle: '{ contentTitle } - { channelTitle }',
       shareFile: 'Share',
     },
@@ -371,10 +267,6 @@
   .content-renderer {
     // Needs to be one less than the ScrollingHeader's z-index of 4
     z-index: 3;
-  }
-
-  .coach-content-label {
-    margin: 8px 0;
   }
 
   .metadata {

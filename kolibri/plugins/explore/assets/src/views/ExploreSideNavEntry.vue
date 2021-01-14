@@ -1,7 +1,7 @@
 <template>
 
   <CoreMenuOption
-    :label="learnString('exploreLabel')"
+    :label="exploreString('exploreLabel')"
     :link="url"
     icon="search"
   />
@@ -14,18 +14,18 @@
   import CoreMenuOption from 'kolibri.coreVue.components.CoreMenuOption';
   import navComponents from 'kolibri.utils.navComponents';
   import urls from 'kolibri.urls';
-  import commonLearnStrings from './commonLearnStrings';
+  import commonExploreStrings from './commonExploreStrings';
 
   const component = {
     name: 'ExploreSideNavEntry',
-    mixins: [commonLearnStrings],
+    mixins: [commonExploreStrings],
     components: {
       CoreMenuOption,
     },
     $trs: {},
     computed: {
       url() {
-        return urls['kolibri:kolibri.plugins.explore:learn']();
+        return urls['kolibri:kolibri.plugins.explore:explore']();
       },
     },
     priority: 5,

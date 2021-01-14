@@ -120,6 +120,7 @@
 
 
 <style lang="scss">
+
   // NOTE: This style is NOT scoped! Because it overrides margin and padding for .content
 
   .content {
@@ -128,10 +129,10 @@
   }
 
   .custom-presentation-iframe {
+    width: 100%;
     // Remove header size (64px) and 5px for avoiding scrollbar.
     height: calc(100vh - 64px - 5px);
     margin-bottom: -5px;
-    width: 100%;
   }
 
 </style>

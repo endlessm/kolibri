@@ -32,13 +32,6 @@
 
     </div>
 
-    <CoachContentLabel
-      v-if="isUserLoggedIn && !isLearner"
-      class="coach-content-label"
-      :value="numCoachContents"
-      :isTopic="isTopic"
-    />
-
   </router-link>
 
 </template>
@@ -46,18 +39,14 @@
 
 <script>
 
-  import { mapGetters } from 'vuex';
-  import { validateLinkObject, validateContentNodeKind } from 'kolibri.utils.validators';
+  import { validateLinkObject } from 'kolibri.utils.validators';
   import responsiveWindowMixin from 'kolibri.coreVue.mixins.responsiveWindowMixin';
-  import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
-  import CoachContentLabel from 'kolibri.coreVue.components.CoachContentLabel';
   import TextTruncator from 'kolibri.coreVue.components.TextTruncator';
   import ProgressIcon from 'kolibri.coreVue.components.ProgressIcon';
 
   export default {
     name: 'ChannelCard',
     components: {
-      CoachContentLabel,
       TextTruncator,
       ProgressIcon,
     },
@@ -75,18 +64,6 @@
         type: String,
         required: false,
       },
-      kind: {
-        type: String,
-        required: true,
-        validator: validateContentNodeKind,
-      },
-      // ContentNode.coach_content will be `0` if not a coach content leaf node,
-      // or a topic without coach content. It will be a positive integer if a topic
-      // with coach content, and `1` if a coach content leaf node.
-      numCoachContents: {
-        type: Number,
-        default: 0,
-      },
       progress: {
         type: Number,
         required: false,
@@ -102,10 +79,6 @@
       },
     },
     computed: {
-      ...mapGetters(['isLearner', 'isUserLoggedIn']),
-      isTopic() {
-        return this.kind === ContentNodeKinds.TOPIC || this.kind === ContentNodeKinds.CHANNEL;
-      },
       overallHeight() {
         return 300;
       },
@@ -132,13 +105,6 @@
   @import './ContentCard/card';
 
   $margin: 16px;
-
-  .coach-content-label {
-    position: absolute;
-    bottom: $margin;
-    left: $margin;
-    display: inline-block;
-  }
 
   .card-main-wrapper {
     @extend %dropshadow-1dp;

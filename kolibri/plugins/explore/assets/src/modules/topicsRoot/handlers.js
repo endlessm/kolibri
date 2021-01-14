@@ -1,7 +1,7 @@
 import { ContentNodeResource, ContentNodeSearchResource } from 'kolibri.resources';
 import { ContentNodeKinds } from 'kolibri.coreVue.vuex.constants';
 import { PageNames, CUSTOM_PRESENTATION_TITLE } from '../../constants';
-import { _collectionState } from '../coreLearn/utils';
+import { _collectionState } from '../coreExplore/utils';
 
 export function showChannels(store) {
   store.commit('CORE_SET_PAGE_LOADING', true);
