@@ -12,15 +12,18 @@ import zipfile
 from collections import OrderedDict
 
 import html5lib
+import libzim.reader
 from cheroot import wsgi
 from django.conf import settings
 from django.core.cache import cache
 from django.core.handlers.wsgi import WSGIRequest
+from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseNotModified
 from django.http import HttpResponsePermanentRedirect
+from django.http import HttpResponseServerError
 from django.http.response import FileResponse
 from django.http.response import StreamingHttpResponse
 from django.template import Context
@@ -28,13 +31,13 @@ from django.template.engine import Engine
 from django.utils.cache import patch_response_headers
 from django.utils.encoding import force_str
 from django.utils.http import http_date
-
 from kolibri.core.content.errors import InvalidStorageFilenameError
 from kolibri.core.content.utils.paths import get_content_storage_file_path
 from kolibri.core.content.utils.paths import get_hashi_base_path
 from kolibri.core.content.utils.paths import get_hashi_html_filename
 from kolibri.core.content.utils.paths import get_hashi_js_filename
 from kolibri.core.content.utils.paths import get_hashi_path
+from kolibri.core.content.utils.paths import get_zim_content_base_path
 from kolibri.core.content.utils.paths import get_zip_content_base_path
 
 
@@ -318,7 +321,9 @@ def get_embedded_file(zipped_path, zipped_filename, embedded_filepath):
         return response
 
 
-path_regex = re.compile("/(?P<zipped_filename>[^/]+)/(?P<embedded_filepath>.*)")
+zip_content_path_regex = re.compile(
+    "/(?P<zipped_filename>[^/]+)/(?P<embedded_filepath>.*)"
+)
 
 
 def get_zipped_file_path(zipped_filename):
@@ -337,7 +342,7 @@ def _zip_content_from_request(request):
     if request.method not in allowed_methods:
         return HttpResponseNotAllowed(allowed_methods)
 
-    match = path_regex.match(request.path_info)
+    match = zip_content_path_regex.match(request.path_info)
     if match is None:
         return HttpResponseNotFound("Path not found")
 
@@ -413,10 +418,128 @@ def zip_content_view(environ, start_response):
     return django_response_to_wsgi(response, environ, start_response)
 
 
+zim_content_index_regex = re.compile("/(?P<zim_filename>[^/]+)$")
+zim_content_article_regex = re.compile(
+    "/(?P<zim_filename>[^/]+)/(?P<zim_article_path>.+)$"
+)
+
+
+def get_zim_content_response(zim_filename, zim_path):
+    zim_file = libzim.reader.File(zim_filename)
+    zim_article = zim_file.get_article(zim_path)
+    # TODO: It would be better to use StreamingHttpResponse or FileResponse
+    #       here. We are copying the entire file for now for simplicity since
+    #       we may use a different Zim implementation in the near future.
+    response = HttpResponse()
+    response.write(zim_article.content.tobytes())
+    response["Content-Length"] = zim_article.content.nbytes
+    return response
+
+
+def zim_content_index_view(request, zim_filename):
+    if request.META.get("HTTP_IF_MODIFIED_SINCE"):
+        return HttpResponseNotModified()
+
+    try:
+        zim_file = _get_zim_file(zim_filename)
+    except RuntimeError:
+        return HttpResponseServerError("Error reading Zim file")
+
+    return _zim_redirect_response(request, zim_filename, zim_file.main_page_url)
+
+
+def zim_content_article_view(request, zim_filename, zim_article_path):
+    if request.META.get("HTTP_IF_MODIFIED_SINCE"):
+        return HttpResponseNotModified()
+
+    try:
+        zim_file = _get_zim_file(zim_filename)
+    except RuntimeError:
+        raise HttpResponseServerError("Error reading Zim file")
+
+    try:
+        zim_article = zim_file.get_article(zim_article_path)
+    except KeyError:
+        raise Http404("Article does not exist")
+
+    if zim_article.is_redirect:
+        redirect_article = zim_article.get_redirect_article()
+        return _zim_redirect_response(request, zim_filename, redirect_article.longurl)
+
+    return _zim_article_response(zim_article)
+
+
+def zim_content_view_dispatch(request):
+    if request.method not in allowed_methods:
+        return HttpResponseNotAllowed(allowed_methods)
+
+    if request.method == "OPTIONS":
+        return HttpResponse()
+
+    match = zim_content_index_regex.match(request.path_info)
+    if match:
+        return zim_content_index_view(request, *match.groups)
+
+    match = zim_content_article_regex.match(request.path_info)
+    if match:
+        return zim_content_article_view(request, *match.groups)
+
+    return HttpResponseNotFound("Path not found")
+
+
+def zim_content_view(environ, start_response):
+    """
+    Handles GET requests and serves content from within the zim file.
+    """
+
+    request = WSGIRequest(environ)
+    response = zim_content_view_dispatch()
+    add_security_headers(request, response)
+    return django_response_to_wsgi(response, environ, start_response)
+
+
 def get_application():
     path_map = {
         get_hashi_base_path(): hashi_view,
         get_zip_content_base_path(): zip_content_view,
+        get_zim_content_base_path(): zim_content_view,
     }
 
     return wsgi.PathInfoDispatcher(path_map)
+
+
+def _get_zim_file(zim_filename):
+    zim_file_path = get_content_storage_file_path(zim_filename)
+
+    if not os.path.exists(zim_file_path):
+        raise Http404("Zim file does not exist")
+
+    # Raises RuntimeError
+    zim_file = libzim.reader.File(zim_file_path)
+
+    return zim_file
+
+
+def _zim_redirect_response(request, zim_filename, zim_article_path):
+    redirect_url = "{prefix}/{zim_filename}/{zim_article_path}".format(
+        prefix=get_zim_content_base_path(),
+        zim_filename=zim_filename,
+        zim_article_path=zim_article_path,
+    )
+    return HttpResponsePermanentRedirect(request.build_absolute_uri(redirect_url))
+
+
+def _zim_article_response(zim_article):
+    # TODO: It would be better to use StreamingHttpResponse or FileResponse
+    #       here. We are copying the entire file for now for simplicity since
+    #       we may use a different Zim implementation in the near future.
+
+    response = HttpResponse()
+    response.write(zim_article.content.tobytes())
+    response["Content-Length"] = zim_article.content.nbytes
+    # ensure the browser knows not to try byte-range requests, as we don't support them here
+    response["Accept-Ranges"] = "none"
+    response["Last-Modified"] = http_date(time.time())
+    patch_response_headers(response, cache_timeout=YEAR_IN_SECONDS)
+
+    return response
